@@ -107,3 +107,68 @@ Pots veure totes les dependències exactes al fitxer [requirements.txt](./requir
 - La base de dades ha d’estar configurada amb suport per caràcters Unicode (UTF-8) per suportar idiomes asiàtics i ciríl·lics.
 - És recomanable configurar accés SSL a la base de dades i aplicar data masking a camps sensibles (com targetes de crèdit).
 - Per al desplegament en entorns reals, es recomana una arquitectura **Alta Disponibilitat** (amb rèplica Actiu-Actiu o Actiu-Passiu).
+
+## Com executar el projecte
+
+Pots executar l’aplicació de dues maneres:
+
+### 🔹 Amb entorn virtual (recomanat)
+
+```bash
+# 1. Clona el repositori
+git clone https://github.com/Marquesmarki/GestioHoteleraAEI.git
+cd GestioHoteleraAEI
+
+# 2. Crea i activa l’entorn virtual
+python3 -m venv venv
+source venv/bin/activate  # (Linux/macOS)
+venv\Scripts\activate     # (Windows)
+
+# 3. Instal·la les dependències
+pip install -r requirements.txt
+
+# 4. Executa el projecte
+cd app
+python3 main.py
+```
+
+### 🔹 Sense entorn virtual
+
+> Només recomanat per entorns de prova temporal.
+
+```bash
+cd app
+pip install -r ../requirements.txt
+python3 main.py
+```
+
+## Exemple d'ús
+
+Un cop accedeixes a l’aplicació, veuràs un menú com aquest (exemple bàsic inicial):
+
+```
+Benvingut a Gestió Hotelera Espamus+
+
+1. Iniciar sessió
+2. Registrar usuari
+3. Sortir
+
+Escull una opció:
+```
+
+> A mesura que es desenvolupin més funcionalitats, aquest menú s’anirà ampliant.
+
+## Testing i Validacions
+
+Totes les funcions s’han provat amb tests manuals per validar el seu comportament bàsic.
+
+S’han verificat:
+- Inici de sessió correcte i incorrecte
+- Connexió a la base de dades
+- Inserció i lectura de dades simulades (dummy data)
+- Gestió d’errors bàsics (fitxers, connexió, entrada d’usuari)
+
+## Autors i Crèdits
+
+Aquest projecte ha estat desenvolupat per l’equip del grup **`Grup12_AEI`** dins del cicle formatiu de grau superior d’**Administració de Sistemes Informàtics i Xarxes (ASIX)**  
+**INS Sa Palomera** – Curs 2024/2025

@@ -24,3 +24,33 @@ The application is developed in **Python** and **PostgreSQL**, structured to wor
 ---
 
 ## 📁 Folder Structure
+## 📁 Folder Structure
+
+```text
+/app
+├── main.py                     # Main file (menu, login, execution)
+│
+├── llibreries/                 # Functions for hotel management modules
+│   ├── bd.py                   # Connection and execution of SQL queries
+│   ├── login.py                # User registration and validation
+│   ├── client.py               # Client registration and management
+│   ├── treballadors.py         # Staff management
+│   ├── manteniment.py          # Check-in, check-out, reservations
+│   ├── facturacio.py           # Invoicing and service calculation
+│   ├── seguretat.py            # Permissions, data masking, etc.
+│   └── alta_disponibilitat.py  # Replication and backups
+│
+├── extract/                    # Export block and external API connection
+│   ├── export_xml.py           # Export reservations to XML + XSD
+│   ├── powerbi.py              # Export to Power BI
+│   └── api_mossos.py           # Send data to the Mossos API
+│
+├── dummy_data/                 # Test data generation
+│   ├── generar_dades.py
+│   └── eliminar_dades.py
+│
+├── logs/
+│   └── registre.log            # Log of actions and errors
+│
+├── requirements.txt            # List of required Python libraries
+└── README.md                   # This document

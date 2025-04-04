@@ -71,8 +71,11 @@ L’aplicació està desenvolupada en **Python** i **PostgreSQL**, estructurada 
 │
 ├── requirements.txt            # Llista de llibreries Python requerides
 └── README.md                   # Aquest document
+```
 
-## 🧰 Requisits
+--- 
+
+## Requisits
 
 Per tal d’executar correctament aquest projecte, cal complir amb els següents requisits a nivell de sistema i de programari:
 
@@ -89,7 +92,7 @@ Per tal d’executar correctament aquest projecte, cal complir amb els següents
 - Power BI (opcional, per quadres de comandament)
 - Llibreries Python necessàries (veure requirements.txt)
 
-### 📦 Llibreries Python utilitzades
+### Llibreries Python utilitzades
 Les llibreries requerides s’instal·len automàticament amb pip. Algunes de les més rellevants són:
 
 - psycopg2-binary: connexió amb PostgreSQL

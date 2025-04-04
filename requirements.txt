@@ -1,33 +1,3 @@
-## Requisits
-
-Per tal d’executar correctament aquest projecte, cal complir amb els següents requisits a nivell de sistema i de programari:
-
-### ✔️ Requisits del sistema
-- Sistema operatiu: Linux (recomanat Ubuntu 22.04 o superior)
-- Connexió a Internet per a clonar el repositori i instal·lar dependències
-- Espai en disc mínim: 500MB
-- Accés a terminal o consola per executar el projecte
-
-### ✔️ Requisits de programari
-- Python 3.10 o superior
-- PostgreSQL 13 o superior
-- Git instal·lat (per fer clonació i seguiment de canvis)
-- Power BI (opcional, per quadres de comandament)
-- Llibreries Python necessàries (veure `requirements.txt`)
-
-### 📦 Llibreries Python utilitzades
-Les llibreries requerides s’instal·len automàticament amb pip. Algunes de les més rellevants són:
-
-- `psycopg2-binary`: connexió amb PostgreSQL
-- `faker`: generació de dades de prova (dummy data)
-- `xml.etree.ElementTree`: creació de fitxers XML
-- `requests`: connexió amb l’API dels Mossos
-- `logging`: registre d’errors i accions
-
-Pots veure totes les dependències exactes al fitxer [`requirements.txt`](./requirements.txt).
-
-### Altres requisits especials
-- La base de dades ha d’estar configurada amb suport per caràcters Unicode (UTF-8) per suportar idiomes asiàtics i ciríl·lics.
-- És recomanable configurar accés SSL a la base de dades i aplicar data masking a camps sensibles (com targetes de crèdit).
-- Per al desplegament en entorns reals, es recomana una arquitectura **Alta Disponibilitat** (amb rèplica Actiu-Actiu o Actiu-Passiu).
-
+psycopg2-binary
+faker
+requests

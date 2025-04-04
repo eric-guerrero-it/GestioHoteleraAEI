@@ -1,10 +1,10 @@
 # app/main.py
-
 from llibreries import bd, login
 
 def menu():
+    acabar = True
     bd.connectar()  # Inicialitza la base de dades
-    while True:
+    while acabar:
         print("\n=== GESTOR ESPAMUS+ ===")
         print("1. Registrar-se")
         print("2. Iniciar sessió")
@@ -17,7 +17,7 @@ def menu():
             login.iniciar_sessio()
         elif opcio == "3":
             print("Fins aviat!")
-            break
+            acabar = False
         else:
             print("Opció no vàlida")
 

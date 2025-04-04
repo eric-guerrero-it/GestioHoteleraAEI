@@ -21,6 +21,7 @@
 - [📚 Autors i Crèdits](#autors-i-crèdits)
 
 
+
 ## Objectiu del Projecte
 
 Aquest projecte té com a objectiu desenvolupar una aplicació per a la gestió integrada d'una cadena hotelera.  

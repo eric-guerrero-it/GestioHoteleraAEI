@@ -9,7 +9,7 @@
 
 - [📌 Nom del projecte](#gestió-hotelera-espamus)
 - [🎯 Objectiu del Projecte](#objectiu-del-projecte)
-- [📁 Estructura de Carpetes](#📁estructura-de-carpetes)
+- [📁 Estructura de Carpetes](#-estructura-de-carpetes)
 - [🧰 Requisits](#requisits)
 - [🚀 Com executar el projecte](#com-executar-el-projecte)
   - [🔹 Amb entorn virtual](#amb-entorn-virtual-recomanat)

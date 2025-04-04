@@ -1,56 +1,55 @@
-# 🏨 Gestió Hotelera Espamus+
+# Gestió Hotelera Espamus+
 
-**Intermodular project ASIX M0372-M0370-MS003**  
-**Course 2024/2025**
+**Projecte intermodular ASIX M0372-M0370-MS003**  
+**Curs 2024/2025**
 
 ---
 
-## 🎯 Project Objective
+## Objectiu del Projecte
 
-This project aims to develop an application for the integrated management of a hotel chain.  
-It includes functionalities such as:
+Aquest projecte té com a objectiu desenvolupar una aplicació per a la gestió integrada d'una cadena hotelera.  
+Inclou funcionalitats com:
 
-- Client management  
-- Reservations  
-- Staff management  
+- Gestió de clients  
+- Reserves  
+- Gestió del personal  
 - Check-in / Check-out  
-- Invoicing  
-- Data export to XML and Power BI  
-- Connection to external API (Mossos d'Esquadra)  
-- Security and high availability of the database  
+- Facturació  
+- Exportació de dades a XML i Power BI  
+- Connexió amb API externa (Mossos d'Esquadra)  
+- Seguretat i alta disponibilitat de la base de dades  
 
-The application is developed in **Python** and **PostgreSQL**, structured to work with open source software and adaptable to environments with few resources — all with a clear structure for teamwork.
+L’aplicació està desenvolupada en **Python** i **PostgreSQL**, estructurada per funcionar amb programari lliure i adaptable a entorns amb pocs recursos — tot amb una estructura clara per al treball en equip.
 
 ---
 
-## 📁 Folder Structure
-## 📁 Folder Structure
+## 📁 Estructura de Carpetes
 
 ```text
 /app
-├── main.py                     # Main file (menu, login, execution)
+├── main.py                     # Fitxer principal (menú, login, execució)
 │
-├── llibreries/                 # Functions for hotel management modules
-│   ├── bd.py                   # Connection and execution of SQL queries
-│   ├── login.py                # User registration and validation
-│   ├── client.py               # Client registration and management
-│   ├── treballadors.py         # Staff management
-│   ├── manteniment.py          # Check-in, check-out, reservations
-│   ├── facturacio.py           # Invoicing and service calculation
-│   ├── seguretat.py            # Permissions, data masking, etc.
-│   └── alta_disponibilitat.py  # Replication and backups
+├── llibreries/                 # Funcions per als mòduls de gestió hotelera
+│   ├── bd.py                   # Connexió i execució de consultes SQL
+│   ├── login.py                # Registre i validació d'usuaris
+│   ├── client.py               # Registre i gestió de clients
+│   ├── treballadors.py         # Gestió de personal
+│   ├── manteniment.py          # Check-in, check-out, reserves
+│   ├── facturacio.py           # Facturació i càlcul de serveis
+│   ├── seguretat.py            # Permisos, enmascarament de dades, etc.
+│   └── alta_disponibilitat.py  # Rèplica i còpies de seguretat
 │
-├── extract/                    # Export block and external API connection
-│   ├── export_xml.py           # Export reservations to XML + XSD
-│   ├── powerbi.py              # Export to Power BI
-│   └── api_mossos.py           # Send data to the Mossos API
+├── extract/                    # Bloc d’exportació i connexió amb API externa
+│   ├── export_xml.py           # Exportació de reserves a XML + XSD
+│   ├── powerbi.py              # Exportació a Power BI
+│   └── api_mossos.py           # Enviament de dades a l’API dels Mossos
 │
-├── dummy_data/                 # Test data generation
+├── dummy_data/                 # Generació de dades de prova
 │   ├── generar_dades.py
 │   └── eliminar_dades.py
 │
 ├── logs/
-│   └── registre.log            # Log of actions and errors
+│   └── registre.log            # Registre d’accions i errors
 │
-├── requirements.txt            # List of required Python libraries
-└── README.md                   # This document
+├── requirements.txt            # Llista de llibreries Python requerides
+└── README.md                   # Aquest document

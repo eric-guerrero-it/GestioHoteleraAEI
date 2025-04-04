@@ -4,6 +4,22 @@
 **Curs 2024/2025**
 
 ---
+## 📑 Índex
+
+- [📌 Nom del projecte](#gestió-hotelera-espamus)
+- [🎯 Objectiu del Projecte](#objectiu-del-projecte)
+- [📁 Estructura de Carpetes](#estructura-de-carpetes)
+- [🧰 Requisits](#requisits)
+- [🚀 Com executar el projecte](#com-executar-el-projecte)
+  - [🔹 Amb entorn virtual](#amb-entorn-virtual-recomanat)
+  - [🔹 Sense entorn virtual](#sense-entorn-virtual)
+- [💡 Exemple d'ús](#exemple-dús)
+- [🛡️ Seguretat i Alta Disponibilitat](#seguretat-i-alta-disponibilitat)
+- [📤 Exportació de dades i integració amb API](#exportació-de-dades-i-integració-amb-api)
+- [📦 Generació de Dummy Data](#generació-de-dummy-data)
+- [🧪 Testing i Validacions](#testing-i-validacions)
+- [📚 Autors i Crèdits](#autors-i-crèdits)
+
 
 ## Objectiu del Projecte
 

@@ -17,8 +17,6 @@ Aquest document recull la planificació inicial del projecte **Gestió Hotelera 
 ### ✔️ Tasques detallades amb descripcions
 ![Tasques Jira](./captures/captura_jira2.png)
 
-### ✔️ Assignació i etiquetes de les tasques
-![Etiquetes Jira](./captures/captura_jira3.png)
 
 ---
 

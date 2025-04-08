@@ -1,4 +1,4 @@
-# 📋 Planificació del Projecte
+# Planificació del Projecte
 
 Aquest document recull la planificació inicial del projecte **Gestió Hotelera Espamus+**, incloent:
 
@@ -9,7 +9,7 @@ Aquest document recull la planificació inicial del projecte **Gestió Hotelera 
 
 ---
 
-## 🗂️ Captures del Jira
+## Captures del Jira
 
 ### ✔️ Vista general del cronograma
 ![Cronograma Jira](./captures/captura_jira1.png)

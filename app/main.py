@@ -1,25 +1,37 @@
-# app/main.py
-from llibreries import bd, login
+"""
+Fitxer principal del projecte 'Gestió Hotelera Espamus+'
 
-def menu():
-    acabar = True
-    bd.connectar()  # Inicialitza la base de dades
-    while acabar:
-        print("\n=== GESTOR ESPAMUS+ ===")
-        print("1. Registrar-se")
+Aquest fitxer és el punt d'entrada de l'aplicació.
+- Mostra el menú principal per interactuar amb l'usuari.
+- Inicia la connexió amb la base de dades.
+- Permet registrar usuaris nous i iniciar sessió.
+- Crida les funcions corresponents segons l'opció seleccionada.
+"""
+
+from llibreries import login 
+
+def main():
+    login.crear_taula_usuaris()
+    sortir = True
+    while sortir:
+        print("\n1. Registrar-se")
         print("2. Iniciar sessió")
         print("3. Sortir")
-        opcio = input("Opció: ")
+        opcio = input("Escull una opció: ")
 
         if opcio == "1":
-            login.registrar()
+            usuari = input("Introdueix un nom d'usuari: ")
+            contrasenya = input("Introdueix una contrasenya: ")
+            login.registrar_usuari(usuari, contrasenya)
         elif opcio == "2":
-            login.iniciar_sessio()
+            usuari = input("Usuari: ")
+            contrasenya = input("Contrasenya: ")
+            login.iniciar_sessio(usuari, contrasenya)
         elif opcio == "3":
-            print("Fins aviat!")
-            acabar = False
+            print("Sortint...")
+            sortir = False
         else:
-            print("Opció no vàlida")
+            print("Opció no vàlida.")
 
 if __name__ == "__main__":
-    menu()
+    main()

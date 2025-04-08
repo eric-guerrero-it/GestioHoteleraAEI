@@ -1,12 +1,12 @@
 """
-Fitxer principal del projecte 'Gestió Hotelera Espamus+'
-
 Aquest fitxer és el punt d'entrada de l'aplicació.
 - Mostra el menú principal per interactuar amb l'usuari.
 - Inicia la connexió amb la base de dades.
 - Permet registrar usuaris nous i iniciar sessió.
 - Crida les funcions corresponents segons l'opció seleccionada.
 """
+
+# app/main.py
 
 from llibreries import login 
 

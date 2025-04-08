@@ -1,0 +1,9 @@
+"""
+Aquest fitxer `logs/registre.log` guarda els esdeveniments importants del sistema:
+- Errors d’execució
+- Operacions d’usuari
+- Connexions a la base de dades
+- Activitats del sistema (alta, baixa, modificació, etc.)
+
+És útil per fer depuració i seguiment d’errors.
+"""

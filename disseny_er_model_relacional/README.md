@@ -47,7 +47,7 @@ Cicle Formatiu de Grau Superior d’**Administració de Sistemes Informàtics i 
 
 ---
 
-Aquest apartat forma part del projecte.  
-🔗 [Torna al README principal del projecte](../README.md)
+## 🔗 Repositori principal del projecte
+➡️ [Veure projecte principal a GitHub](../README.md)
 
 ---

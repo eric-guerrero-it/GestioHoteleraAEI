@@ -1,0 +1,83 @@
+-- MODEL RELACIONAL: Implementat per a la base de dades de la cadena hotelera ESPAMUS+. Grup12 AEI 
+
+-- Informació bàsica dels hotels gestionats
+HOTEL(idHotel, nom, estrelles, adreça, població, web, telèfon)
+
+-- Dades comunes de totes les persones (clients i treballadors)
+PERSONA(DNI, nom, cognoms, telèfon, adreça, dataNaixement)
+
+-- Especialització de PERSONA que representa els clients
+CLIENT(DNI)
+ON {DNI} REFERENCIA PERSONA {DNI}
+
+-- Especialització de PERSONA que representa empleats de l'hotel
+TREBALLADOR(DNI, tipusTreballador)
+ON {DNI} REFERENCIA PERSONA {DNI}
+
+-- Subtipus de TREBALLADOR amb atribut específic
+RECEPCIO(DNI, anysExperiència)
+ON {DNI} REFERENCIA TREBALLADOR {DNI}
+
+-- Subtipus de TREBALLADOR amb atributs propis i relació reflexiva (revisatPer)
+CUINA(DNI, categoria, darrerLlocTreball, revisatPer)
+ON {DNI} REFERENCIA TREBALLADOR {DNI}
+ON {revisatPer} REFERENCIA CUINA {DNI}
+
+-- Subtipus genèric per treballadors d’altres àrees
+RESTAPersonal(DNI)
+ON {DNI} REFERENCIA TREBALLADOR {DNI}
+
+-- Entitat simple que representa idiomes reconeguts pel sistema
+IDIOMA(nom)
+
+-- Serveis oferts pels hotels, com bugaderia, spa, etc.
+SERVEI(idServei, nom, cost)
+
+-- Dades físiques de les habitacions d'un hotel concret
+HABITACIO(idHabitació, número, llits, m2, teNevera, teTelevisió, idHotel)
+ON {idHotel} REFERENCIA HOTEL {idHotel}
+
+-- Relació N:M entre TREBALLADOR i IDIOMA amb atributs
+CONEIXEMENT(DNI, nomIdioma, parla, entén, escriu)
+ON {DNI} REFERENCIA TREBALLADOR {DNI}
+ON {nomIdioma} REFERENCIA IDIOMA {nom}
+PK: {DNI, nomIdioma}
+
+-- Relació N:M entre hotels i serveis disponibles
+HOTEL_SERVEI(idHotel, idServei)
+ON {idHotel} REFERENCIA HOTEL {idHotel}
+ON {idServei} REFERENCIA SERVEI {idServei}
+PK: {idHotel, idServei}
+
+-- Assignació de treballadors a un hotel concret
+TREBALLA(idHotel, DNI_treballador)
+ON {idHotel} REFERENCIA HOTEL {idHotel}
+ON {DNI_treballador} REFERENCIA TREBALLADOR {DNI}
+
+-- Registres de reserves fetes per clients en hotels amb dates
+RESERVA(idReserva, dataInici, dataFinal, idHotel, DNI_client)
+ON {idHotel} REFERENCIA HOTEL {idHotel}
+ON {DNI_client} REFERENCIA CLIENT {DNI}
+
+-- Habitacions assignades a una reserva amb preus
+RESERVA_HABITACIO(idReserva, idHabitació, preuTemporadaAlta, preuTemporadaBaixa)
+ON {idReserva} REFERENCIA RESERVA {idReserva}
+ON {idHabitació} REFERENCIA HABITACIO {idHabitació}
+PK: {idReserva, idHabitació}
+
+-- Sol·licitud de serveis que pot fer un client durant l'estada
+SOLLICITUD(idSollicitud, dataHora, idHotel, idServei, DNI_client, pagarEnCheckOut)
+ON {idHotel} REFERENCIA HOTEL {idHotel}
+ON {idServei} REFERENCIA SERVEI {idServei}
+ON {DNI_client} REFERENCIA CLIENT {DNI}
+
+-- Dades de facturació dels serveis consumits per un client
+FACTURA(idFactura, dataEmissió, importTotal, DNI_client)
+ON {DNI_client} REFERENCIA CLIENT {DNI}
+
+-- Relació N:M entre factures i sol·licituds de serveis
+FACTURA_SERVEI(idFactura, idSollicitud)
+ON {idFactura} REFERENCIA FACTURA {idFactura}
+ON {idSollicitud} REFERENCIA SOLLICITUD {idSollicitud}
+PK: {idFactura, idSollicitud}
+

@@ -44,6 +44,9 @@ L’objectiu d’aquesta fase és definir amb precisió l’estructura de la bas
 Cicle Formatiu de Grau Superior d’**Administració de Sistemes Informàtics i Xarxes (ASIX)**  
 **INS Sa Palomera – Curs 2024/2025**
 
+
 ---
+
 🔗 [Tornar al projecte principal](../README.md)
+
 ---

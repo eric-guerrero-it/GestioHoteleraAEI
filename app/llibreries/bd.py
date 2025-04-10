@@ -9,7 +9,7 @@ Inclou mètodes per executar consultes, inserir dades i gestionar errors de conn
 Fitxer: bd.py
 
 Conté la funció per connectar-se a la base de dades PostgreSQL.
-Llegeix les credencials des d’un fitxer 'hotel.enu' (afegit al .gitignore).
+Llegeix les credencials des d’un fitxer 'hotel.enu' (afegit al .gitignore).   
 """
 
 import psycopg2

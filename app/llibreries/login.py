@@ -17,6 +17,10 @@ from llibreries.bd import connectar_bd  # Importem la connexió amb SQLite
 def crear_taula_usuaris():
     conn = connectar_bd()
     cursor = conn.cursor()
+
+    cursor.execute("CREATE SCHEMA IF NOT EXISTS public;")
+    cursor.execute("SET search_path TO public;")
+
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS usuaris (
             usuari TEXT PRIMARY KEY,
@@ -39,7 +43,7 @@ def registrar_usuari(usuari, contrasenya):
     contrasenya_encriptada = encriptar_contrasenya(contrasenya)
 
     try:
-        cursor.execute("INSERT INTO usuaris (usuari, contrasenya) VALUES (?, ?)",
+        cursor.execute("INSERT INTO usuaris (usuari, contrasenya) VALUES (%s, %s)",
                        (usuari, contrasenya_encriptada))
         conn.commit()
         print("Usuari registrat correctament.")
@@ -55,7 +59,7 @@ def iniciar_sessio(usuari, contrasenya):
     cursor = conn.cursor()
     contrasenya_encriptada = encriptar_contrasenya(contrasenya)
 
-    cursor.execute("SELECT * FROM usuaris WHERE usuari = ? AND contrasenya = ?",
+    cursor.execute("SELECT * FROM usuaris WHERE usuari = %s AND contrasenya = %s",
                    (usuari, contrasenya_encriptada))
     usuari_trobat = cursor.fetchone()
     conn.close()

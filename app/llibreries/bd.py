@@ -13,13 +13,16 @@ Llegeix les credencials des d’un fitxer 'hotel.enu' (afegit al .gitignore).
 """
 
 import psycopg2
+import os
+
 
 # ───────────────────────────────────────────────
 # Connecta a la base de dades PostgreSQL utilitzant les credencials del fitxer
 def connectar_bd():
     # Llegim les 4 línies del fitxer amb BD, USER, PW, IP
-    with open("hotel.enu", "r") as f:
-        linies = f.read().splitlines()
+    ruta = os.path.join(os.path.dirname(__file__), "hotel.enu")
+    with open(ruta, "r") as f:
+            linies = f.read().splitlines()
 
     # Assignem cada línia a la variable corresponent
     bd = linies[0].split("=")[1].strip()

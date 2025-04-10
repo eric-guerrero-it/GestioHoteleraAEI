@@ -31,10 +31,10 @@ L’objectiu d’aquesta fase és definir amb precisió l’estructura de la bas
 
 ## Estat del Lliurament
 
-- ✅ Model ER validat segons enunciat
-- ✅ Model relacional complet i justificat
-- ✅ Scripts provats a PostgreSQL (amb FK, PK, CHECKs)
-- ✅ Documentació en PDF preparada per entrega
+- ✔️ Model ER validat segons enunciat
+- ✔️ Model relacional complet i justificat
+- ✔️ Scripts provats a PostgreSQL (amb FK, PK, CHECKs)
+- ✔️ Documentació en PDF preparada per entrega
 
 ---
 

@@ -1,4 +1,4 @@
-# Disseny ER i Model Relacional – Espamus+
+# Disseny Entitat-Relació i Model Relacional – Gestió Hotelera Espamus+
 
 Aquesta carpeta conté tota la documentació i fitxers relacionats amb el **disseny de la base de dades** del projecte **Gestió Hotelera Espamus+**, dins del projecte intermodular **ASIX M0372-M0370-MS003**.
 
@@ -43,3 +43,7 @@ L’objectiu d’aquesta fase és definir amb precisió l’estructura de la bas
 **Grup 12 - AEI**  
 Cicle Formatiu de Grau Superior d’**Administració de Sistemes Informàtics i Xarxes (ASIX)**  
 **INS Sa Palomera – Curs 2024/2025**
+
+---
+🔗 [Tornar al projecte principal](../README.md)
+---

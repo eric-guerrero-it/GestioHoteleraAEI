@@ -49,7 +49,7 @@ def registrar_usuari(usuari, contrasenya):
     conn.close()
 
 # ───────────────────────────────────────────────
-# Inicia sessió verificant les credencials.
+# Inicia sessió verificant les credencials
 def iniciar_sessio(usuari, contrasenya):
     conn = connectar_bd()
     cursor = conn.cursor()

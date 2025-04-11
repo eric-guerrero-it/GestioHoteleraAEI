@@ -5,3 +5,10 @@ Aquest fitxer `logs/registre.log` guarda els esdeveniments importants del sistem
 - Activitats del sistema (alta, baixa, modificació, etc.)
 
 És útil per fer depuració i seguiment d’errors.
+
+----------------
+
+2025-04-11 18:52:03 - LOGIN - EricG
+2025-04-11 18:52:11 - LOGIN - EricQ
+2025-04-11 18:57:52 - REGISTRE - Eric�
+2025-04-11 18:58:00 - LOGIN - Eric�

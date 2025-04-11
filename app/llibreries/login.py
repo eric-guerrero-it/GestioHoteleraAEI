@@ -10,6 +10,8 @@ import os
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 from llibreries.bd import connectar_bd
+from datetime import datetime
+
 
 
 def crear_taula_usuaris():
@@ -31,6 +33,18 @@ def crear_taula_usuaris():
     conn.commit()
     conn.close()
 
+def guardar_a_fitxer(usuari, accio):
+        """
+        Desa l’usuari, l’acció realitzada i la data/hora al fitxer registre.log.
+
+        Args:
+            usuari (str): Nom d’usuari
+            accio (str): 'registre' o 'login'
+        """
+        os.makedirs("app/logs", exist_ok=True)
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open("app/logs/registre.log", "a") as f:  
+            f.write(f"{timestamp} - {accio.upper()} - {usuari}\n")
 
 def encriptar_contrasenya(contrasenya):
     """
@@ -52,23 +66,26 @@ def registrar_usuari(usuari, contrasenya):
     Args:
         usuari (str): Nom d'usuari
         contrasenya (str): Contrasenya
+
+    Returns:
+        bool: True si s'ha registrat, False si ja existeix
     """
     conn = connectar_bd()
     cursor = conn.cursor()
-    contrasenya_encriptada = encriptar_contrasenya(contrasenya)
 
-    try:
-        cursor.execute("INSERT INTO usuaris (usuari, contrasenya) VALUES (%s, %s)",
-                       (usuari, contrasenya_encriptada))
-        conn.commit()
-        print("Usuari registrat correctament.")
-        guardar_a_fitxer(usuari, contrasenya_encriptada)
-        conn.close()
-        return True
-    except Exception as e:
-        print("Aquest usuari ja existeix.")
+    cursor.execute("SELECT * FROM usuaris WHERE usuari = %s", (usuari,))
+    if cursor.fetchone():
         conn.close()
         return False
+
+    contrasenya_encriptada = encriptar_contrasenya(contrasenya)
+    cursor.execute("INSERT INTO usuaris (usuari, contrasenya) VALUES (%s, %s)",
+                   (usuari, contrasenya_encriptada))
+    conn.commit()
+    conn.close()
+    guardar_a_fitxer(usuari, "registre")
+    return True
+
 
 
 def iniciar_sessio(usuari, contrasenya):
@@ -92,19 +109,6 @@ def iniciar_sessio(usuari, contrasenya):
     conn.close()
 
     return bool(usuari_trobat)
-
-
-def guardar_a_fitxer(usuari, contrasenya_encriptada):
-    """
-    Desa l’usuari i la seva contrasenya encriptada al fitxer registre.log.
-
-    Args:
-        usuari (str): Nom d’usuari
-        contrasenya_encriptada (str): Contrasenya SHA-256
-    """
-    os.makedirs("app/logs", exist_ok=True)
-    with open("app/logs/registre.log", "a") as f:
-        f.write(f"{usuari},{contrasenya_encriptada}\n")
 
 
 def iniciar_gui():
@@ -134,9 +138,13 @@ def iniciar_gui():
             return
 
         if iniciar_sessio(usuari, contrasenya):
+            print("Sessió iniciada correctament!")
+            guardar_a_fitxer(usuari, "login")
             messagebox.showinfo("Benvingut", "Sessió iniciada correctament!")
         else:
             messagebox.showerror("Error", "Usuari o contrasenya incorrectes.")
+    
+    
 
     crear_taula_usuaris()
 

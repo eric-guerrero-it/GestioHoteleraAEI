@@ -11,7 +11,7 @@ Aquest mòdul permet la connexió a la base de dades i la gestió d’usuaris pe
 - Validació amb contrasenya encriptada
 - Crea automàticament la taula `usuaris` a la BD
 
-##  Fitxers implicats
+## 📂 Fitxers implicats
 
 - `app/llibreries/bd.py` → Connexió a PostgreSQL amb credencials ocultes a `hotel.enu`
 - `app/llibreries/login.py` → Registre, login, encriptació i interfície
@@ -19,10 +19,10 @@ Aquest mòdul permet la connexió a la base de dades i la gestió d’usuaris pe
 
 ##  Estat actual
 
-- [x] Connexió a PostgreSQL funcional
-- [x] Registre i login funcional via Tkinter
-- [x] Encriptació de contrasenyes SHA-256
-- [x] Creació automàtica de taula d’usuaris
+- [x] Connexió a PostgreSQL provada i funcional
+- [x] Sistema de login funcional amb interfície Tkinter
+- [x] Encriptació de contrasenyes mitjançant SHA-256
+- [x] Creació automàtica de la taula `usuaris`
 
 ##  Notes
 

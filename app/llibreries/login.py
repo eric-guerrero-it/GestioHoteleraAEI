@@ -130,6 +130,13 @@ def iniciar_gui():
             messagebox.showerror("Error", "Aquest usuari ja existeix.")
 
     def login_gui():
+        """
+        Obre una finestra de diàleg per iniciar sessió amb l'usuari.
+
+        Demana nom d'usuari i contrasenya mitjançant finestres emergents.
+        Valida les credencials amb la base de dades i mostra un missatge
+        d'èxit o error segons el resultat. També registra l'acció si és correcta.
+        """
         usuari = simpledialog.askstring("Login", "Usuari:")
         if usuari is None:
             return

@@ -31,4 +31,4 @@ Aquest mòdul permet la connexió a la base de dades i la gestió d’usuaris pe
 
 ## Autors
 
-**Grup 12 - AEI** – ASIX INS Sa Palomera – Curs 2024/2025
+ **Grup 12 - AEI** – ASIX INS Sa Palomera – Curs 2024/2025

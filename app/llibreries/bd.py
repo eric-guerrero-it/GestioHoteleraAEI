@@ -1,13 +1,6 @@
 """
 Fitxer: bd.py
 
-Conté les funcions per establir connexió amb la base de dades PostgreSQL.
-Inclou mètodes per executar consultes, inserir dades i gestionar errors de connexió.
-"""
-
-"""
-Fitxer: bd.py
-
 Conté la funció per connectar-se a la base de dades PostgreSQL.
 Llegeix les credencials des d’un fitxer 'hotel.enu' (afegit al .gitignore).   
 """

@@ -149,3 +149,4 @@ def iniciar_gui():
     tk.Button(root, text="Registrar-se", width=20, command=registrar_gui).pack(pady=5)
 
     root.mainloop() 
+ 

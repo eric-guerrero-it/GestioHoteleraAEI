@@ -75,7 +75,7 @@ def iniciar_sessio(usuari, contrasenya):
 # Desa les credencials (encriptades) a un fitxer local
 def guardar_a_fitxer(usuari, contrasenya_encriptada):
     os.makedirs("app/logs", exist_ok=True)
-    with open("app/logs/usuaris.txt", "a") as f:
+    with open("app/logs/registre.log", "a") as f:
         f.write(f"{usuari},{contrasenya_encriptada}\n")
 
 # ───────────────────────────────────────────────

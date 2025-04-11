@@ -15,7 +15,7 @@ Aquest mòdul permet la connexió a la base de dades i la gestió d’usuaris pe
 
 - [`app/llibreries/bd.py`](../app/llibreries/bd.py) → Connexió a PostgreSQL amb credencials ocultes (`hotel.enu`)
 - [`app/llibreries/login.py`](../app/llibreries/login.py) → Registre, login, encriptació i interfície gràfica
-- [`logs/registre.log`](../logs/registre.log) → Registre local d’accessos (només desenvolupament)
+- [`logs/registre.log`](../app/logs/registre.log) → Registre local d’accessos (només desenvolupament)
 
 ## ✅ Estat actual
 

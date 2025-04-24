@@ -8,10 +8,11 @@
  - Crida les funcions corresponents segons l'opció seleccionada.  
  """
 
-from llibreries import login
+from llibreries import login, manteniment
 
 def main():
-    login.iniciar_gui()  
+    if login.iniciar_gui():
+        manteniment.obrir_finestra_manteniment()
 
 if __name__ == "__main__":
     main()

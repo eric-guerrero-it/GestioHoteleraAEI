@@ -1,37 +1,29 @@
-"""
-Fitxer: generar_dades.py
-
-Aquest fitxer conté funcions per generar dades simulades (dummy data) 
-per fer proves i validar el funcionament del sistema hoteler.
-Les dades poden incloure clients, reserves, treballadors i activitats.
-
-Aquestes dades ajuden a comprovar el rendiment i els fluxos del programa sense necessitat de dades reals.
-"""
+from llibreries.bd import connectar_bd
 from faker import Faker
-import psycopg2
-from llibreries import bd  # fitxer bd.py per connectar 
 
-# Inicialitzem Faker
-fake = Faker('es_ES')  # Idioma espanyol/català
+# Inicialitzar Faker
+fake = Faker()
 
-# Connectem a la base de dades
-conn = bd.onnectar_bd()
-cursor = conn.cursor()
+def generar_persona(cursor, num_dades=10):
+    for _ in range(num_dades):
+        # Generació de dades falses per a la taula PERSONA
+        dni = fake.unique.ssn()
+        nom = fake.first_name()
+        cognoms = fake.last_name()
+        telefon = fake.phone_number()
+        adreca = fake.address()
+        data_naixement = fake.date_of_birth(minimum_age=18, maximum_age=70)
 
-# Inserim 100 registres
-for _ in range(100):
-    dni = fake.unique.bothify(text='########?')[:15]  # DNI estil 12345678A
-    nom = fake.first_name()
-    cognoms = f"{fake.last_name()} {fake.last_name()}"
-    telefon = fake.phone_number()[:20]
-    adreca = fake.address().replace("\n", ", ")[:150]
-    datanaixement = fake.date_of_birth(minimum_age=18, maximum_age=65)  # format: YYYY-MM-DD
-
-    cursor.execute("""
-        INSERT INTO usuaris (dni, nom, cognoms, telefon, adreca, datanaixement)
-        VALUES (%s, %s, %s, %s, %s, %s)
-    """, (dni, nom, cognoms, telefon, adreca, datanaixement))
-
-conn.commit()
-conn.close()
-print("100 usuaris falsos afegits correctament.")
+        try:
+            # Establir connexió amb la base de dades
+            conn = connectar_bd()  # Aquí utilitzes la connexió definida a bd.py
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO persona (dni, nom, cognoms, telefon, adreca, dataNaixement)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            ''', (dni, nom, cognoms, telefon, adreca, data_naixement))
+            conn.commit()
+        except Exception as e:
+            print(f"Error en generar persona: {e}")
+        finally:
+            conn.close()

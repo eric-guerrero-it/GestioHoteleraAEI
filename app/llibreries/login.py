@@ -13,7 +13,7 @@ from llibreries.bd import connectar_bd
 from datetime import datetime
 
 
-
+ 
 def crear_taula_usuaris():
     """
     Crea l'esquema i la taula 'usuaris' si no existeixen.

@@ -70,8 +70,6 @@ GRANT SELECT ON TABLES TO analista_dades;
 
 ---
 
----
-
 ## 3️⃣ Connexió SSL – Justificació i Configuració
 
 Per tal de garantir la seguretat de les dades emmagatzemades a la base de dades del projecte **Gestió Hotelera Espamus+**, hem configurat l'accés a **PostgreSQL** mitjançant connexions segures amb **SSL** (Secure Sockets Layer). Aquesta mesura ajuda a evitar la intercepció de dades delicades durant la comunicació entre el client i el servidor, especialment quan es tracta d'informació personal o financera com les dades dels clients i les targetes de crèdit.

@@ -312,7 +312,7 @@ Passat aquest període, les dades s’hauran d'anonimitzar o eliminar.
 
 ---
 
-### ✅ Opció 1: Pseudonimització (Recomanada)
+### ✅ Opció: Pseudonimització 
 
 Les dades sensibles es poden pseudonimitzar per mantenir un control però protegir la informació:
 

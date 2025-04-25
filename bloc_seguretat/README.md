@@ -120,7 +120,9 @@ Edició del fitxer pg_hba.conf per obligar connexions segures:
 ```bash
 hostssl all all 10.94.254.76 scram-sha-256
 ````
-
+---
+![Imatge de la configuració SQL](images/postgresql_hba.png)
+---
 Un cop realitzada la configuració, s’ha reiniciat el servei:
 
 ```bash

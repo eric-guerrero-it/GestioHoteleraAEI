@@ -377,3 +377,8 @@ $$ LANGUAGE plpgsql;
 ✅ Reducció del risc d’accés indegut per part d’usuaris interns  
 
 ✅ Compliment de la legislació vigent i bones pràctiques del sector  
+
+---
+
+## 🔗 Repositori principal del projecte
+📁 [Veure projecte principal a GitHub](../README.md)

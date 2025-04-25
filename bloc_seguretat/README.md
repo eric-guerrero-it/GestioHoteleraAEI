@@ -349,6 +349,24 @@ END;
 $$ LANGUAGE plpgsql;
 ````
 
+## ✅ Trigger automàtic:
+
+Així cada cop que algú afegeixi una reserva, també revisaria si ha d'esborrar targetes antigues.
+
+```sql
+CREATE OR REPLACE FUNCTION eliminar_targetes_trigger()
+RETURNS trigger AS $$
+BEGIN
+    PERFORM eliminar_targetes_antigues();
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_eliminar_targetes
+AFTER INSERT ON reserva
+EXECUTE FUNCTION eliminar_targetes_trigger();
+````
+
 ---
 
 ### 🛡️ Justificació de Seguretat i Legalitat

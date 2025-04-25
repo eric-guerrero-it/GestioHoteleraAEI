@@ -1,4 +1,4 @@
-# 🔐 Esquema de Seguretat – Gestió Hotelera Espamus+
+# Esquema de Seguretat – Gestió Hotelera Espamus+
 
 Aquest document recull l’estructura de seguretat de la base de dades del projecte **Espamus+**, amb la definició de rols, permisos, accés segur (SSL), data masking i estratègies per protegir informació sensible.
 
@@ -175,7 +175,7 @@ Aquesta acció:
 
 ---
 
-## 🔒 Aplicació de Data Masking (Enmascarament de dades)
+## Aplicació de Data Masking (Enmascarament de dades)
 
 Per protegir les dades personals i sensibles dels usuaris, s’han implementat tècniques de **Data Masking** mitjançant l’ús de vistes i restringint permisos. Aquesta pràctica permet que determinats rols accedeixin només a versions parcialment anonimitzades de la informació.
 
@@ -266,9 +266,9 @@ $$ LANGUAGE plpgsql;
 
 ---
 
-## 🔐 Estratègia per a l’Eliminació Segura de Dades de Targetes
+## Estratègia per a l’Eliminació Segura de Dades de Targetes
 
-### 🎯 Objectiu
+### Objectiu
 
 Evitar que les dades de targetes de crèdit es mantinguin a la base de dades un cop ja no són necessàries, complint la normativa del RGPD i les bones pràctiques de seguretat en gestió d’informació sensible.
 
@@ -332,7 +332,7 @@ WHERE dni_client IN (
 
 ---
 
-### 🔄 Automatització recomanada
+### Automatització recomanada
 
 Es pot automatitzar aquest procés mitjançant una funció + trigger o una tasca programada (cron).
 
@@ -356,6 +356,7 @@ $$ LANGUAGE plpgsql;
 ---
 
 ### 🛡️ Justificació de Seguretat i Legalitat
+
 
 ✅ Compliment del principi de minimització de dades (RGPD)  
 

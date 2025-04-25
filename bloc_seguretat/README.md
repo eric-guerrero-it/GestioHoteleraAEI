@@ -184,6 +184,8 @@ Aquesta acció:
  🔄 Reinicia automàticament PostgreSQL amb els nous certificats  
 
 ---
+![Imatge de la configuració SQL](images/ssl_pgadmin.png)
+---
 
 ## Aplicació de Data Masking (Enmascarament de dades)
 

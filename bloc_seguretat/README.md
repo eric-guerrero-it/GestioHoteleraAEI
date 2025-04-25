@@ -161,7 +161,8 @@ Aquest script es guarda a:
 ```bash
 /usr/local/bin/renew_ssl_cert.sh
 ````
-
+---
+![Imatge de la configuració SQL](images/postgresql_script_renovacio_certificat.png)
 --- 
 
 ### Programació automàtica amb cron

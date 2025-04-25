@@ -111,6 +111,9 @@ ssl = on
 ssl_cert_file = '/etc/ssl/private/server.crt'
 ssl_key_file = '/etc/ssl/private/server.key'
 ````
+---
+![Imatge de la configuració SQL](images/postgresql_conf.png)
+---
 
 Edició del fitxer pg_hba.conf per obligar connexions segures:
 

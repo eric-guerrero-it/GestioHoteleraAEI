@@ -219,11 +219,11 @@ CREATE TABLE persona (
 
 ```sql
 CREATE VIEW persona_masked AS
-SELECT 
-    CONCAT('XXX-', RIGHT(dni, 4)) AS dni,
-    nom,
-    cognoms,
-    telefon
+SELECT
+CONCAT('XXX-', SUBSTRING(dni FROM LENGTH(dni) - 3 FOR 4)) AS dni,
+nom,
+cognoms,
+telefon
 FROM persona;
 ````
 
@@ -256,7 +256,7 @@ CREATE VIEW pagament_masked AS
 SELECT 
     id_pagament,
     dni_client,
-    CONCAT('**** **** **** ', RIGHT(num_targeta, 4)) AS num_targeta,
+    CONCAT('**** **** **** ', SUBSTRING(num_targeta FROM LENGTH(num_targeta) - 3 FOR 4)) AS num_targeta,
     import
 FROM pagament;
 ````
@@ -366,15 +366,16 @@ Així cada cop que algú afegeixi una reserva, també revisaria si ha d'esborrar
 
 ```sql
 CREATE OR REPLACE FUNCTION eliminar_targetes_trigger()
-RETURNS trigger AS $$
+RETURNS TRIGGER AS $$
 BEGIN
-    PERFORM eliminar_targetes_antigues();
+    CALL eliminar_targetes_antigues();
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_eliminar_targetes
 AFTER INSERT ON reserva
+FOR EACH ROW
 EXECUTE FUNCTION eliminar_targetes_trigger();
 ````
 

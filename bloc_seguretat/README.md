@@ -17,7 +17,9 @@ Aquest document recull l’estructura de seguretat de la base de dades del proje
 | `usuari_temporal`       | Usuari extern amb accés temporal limitat    | `HOTEL`, `HABITACIO`                               | `SELECT`                           |
 
 •  Els rols estan definits per garantir que cada usuari o grup d'usuaris només tingui accés a les dades i funcions que necessiten per realitzar la seva tasca específica. Això segueix el principi de menor privilegi (principi de seguretat bàsic), que és una bona pràctica per reduir el risc d'accés no autoritzat.
+
 •  Els rols com admin_hotel tenen permisos amplis per gestionar tot el sistema, mentre que altres rols, com gestor_recepcio, tenen permisos limitats a les taules específiques que gestiona (per exemple, només per a reserves i clients).
+
 •  Per què? Això facilita la segregació de tasques i evita que un empleat tingui accés a informació o funcions que no necessita per la seva feina, reduint el risc de filtració de dades internes.
 
 L'usuari temporal té accés limitat per consultar només informació essencial (com hotels i habitacions) durant un període determinat, com en el cas d'un client extern que necessita accedir a la base de dades per un temps específic (per exemple, per consultar disponibilitat d'habitacions) sense accedir a dades més sensibles. Això ajuda a mantenir la seguretat i controlar l'accés limitat.

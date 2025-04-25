@@ -380,5 +380,16 @@ $$ LANGUAGE plpgsql;
 
 ---
 
+## Autors
+
+**Grup 12 - AEI**  
+Cicle Formatiu de Grau Superior d’**Administració de Sistemes Informàtics i Xarxes (ASIX)**  
+**INS Sa Palomera – Curs 2024/2025**
+
+
+---
+
 ## 🔗 Repositori principal del projecte
-📁 [Veure projecte principal a GitHub](../README.md)
+➡️ [Veure projecte principal a GitHub](../README.md)
+
+---

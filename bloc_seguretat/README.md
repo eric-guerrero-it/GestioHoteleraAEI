@@ -165,13 +165,13 @@ Per executar automàticament la renovació cada 300 dies, afegim aquesta entrada
 
 Aquesta acció:
 
-    🔁 Es fa cada 300 dies  
+ 🔁 Es fa cada 300 dies  
   
-    ⏰ A les 3:00h del matí  
+ ⏰ A les 3:00h del matí  
   
-    🔐 Es fa sense intervenció manual  
+ 🔐 Es fa sense intervenció manual  
   
-    🔄 Reinicia automàticament PostgreSQL amb els nous certificats  
+ 🔄 Reinicia automàticament PostgreSQL amb els nous certificats  
 
 ---
 

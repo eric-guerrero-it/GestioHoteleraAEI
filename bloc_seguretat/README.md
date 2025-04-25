@@ -89,6 +89,7 @@ chown postgres:postgres server.key
 # Generar el certificat autofirmat
 openssl req -new -x509 -days 365 -key server.key -out server.crt
 ````
+
 A continuació, els fitxers server.key i server.crt s'han mogut a la carpeta:
 
 ```bash
@@ -125,7 +126,7 @@ sudo systemctl restart postgresql
 
 Per garantir la continuïtat del servei segur, hem creat un sistema de renovació periòdica dels certificats SSL.
 
-Script renew_ssl_cert.sh
+#### Script `renew_ssl_cert.sh`
 
 El següent script genera nous certificats, els reemplaça i reinicia PostgreSQL automàticament:
 
@@ -154,7 +155,7 @@ Aquest script es guarda a:
 
 --- 
 
-### 2️⃣ Renovació Automàtica de Certificats
+### Programació automàtica amb cron
 
 Per executar automàticament la renovació cada 300 dies, afegim aquesta entrada al crontab:
 
@@ -163,14 +164,16 @@ Per executar automàticament la renovació cada 300 dies, afegim aquesta entrada
 ````
 
 Aquesta acció:
-  🔁 Es fa cada 300 dies
-  ⏰ A les 3:00h del matí
-  🔐 Es fa sense intervenció manual
-  🔄 Reinicia automàticament PostgreSQL amb els nous certificats
 
-  ---
+  🔁 Es fa cada 300 dies  
+  
+  ⏰ A les 3:00h del matí  
+  
+  🔐 Es fa sense intervenció manual  
+  
+  🔄 Reinicia automàticament PostgreSQL amb els nous certificats  
 
-  ---
+---
 
 ## 🔒 Aplicació de Data Masking (Enmascarament de dades)
 
@@ -210,7 +213,6 @@ GRANT SELECT ON persona_masked TO analista_dades;
 
 --- 
 
-
 ### 2️⃣ Exemple: Número de Targeta
 
 #### Taula real:
@@ -245,7 +247,6 @@ GRANT SELECT ON pagament_masked TO analista_dades;
 
 ---
 
-
 ### 🛠️ BONUS: Funció de masking personalitzat amb RLS
 
 Aquesta funció pot ser útil en casos avançats amb seguretat a nivell de fila o control personalitzat per rol:
@@ -264,7 +265,6 @@ $$ LANGUAGE plpgsql;
 ````
 
 ---
-
 
 ## 🔐 Estratègia per a l’Eliminació Segura de Dades de Targetes
 
@@ -288,12 +288,13 @@ CREATE TABLE pagament (
 
 ---
 
-
 ### ⏳ Condició de retenció
 
 Només es mantindran les dades de num_targeta mentre:
-      El client encara està allotjat
-      O fins a 7 dies després del check-out
+
+      - El client encara està allotjat
+      
+      - O fins a 7 dies després del check-out
 
 Passat aquest període, les dades s’hauran d'anonimitzar o eliminar.
 
@@ -314,7 +315,6 @@ WHERE dni_client IN (
 ````
 
 ---
-
 
 ### ❌ Opció 2: Eliminació física (Només si no cal mai més)
 
@@ -353,9 +353,14 @@ END;
 $$ LANGUAGE plpgsql;
 ````
 
+---
 
 ### 🛡️ Justificació de Seguretat i Legalitat
-✅ Compliment del principi de minimització de dades (RGPD)
-✅ Protecció davant robatoris de base de dades o fuites d’informació
-✅ Reducció del risc d’accés indegut per part d’usuaris interns
-✅ Compliment de la legislació vigent i bones pràctiques del sector
+
+✅ Compliment del principi de minimització de dades (RGPD)  
+
+✅ Protecció davant robatoris de base de dades o fuites d’informació  
+
+✅ Reducció del risc d’accés indegut per part d’usuaris interns  
+
+✅ Compliment de la legislació vigent i bones pràctiques del sector  

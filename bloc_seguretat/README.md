@@ -129,6 +129,8 @@ Edició del fitxer pg_hba.conf per obligar connexions segures:
 hostssl all all 10.94.254.76 scram-sha-256
 ````
 ---
+Aquesta finestra de connexió a pgAdmin sol·licita les contrasenyes per al túnel SSH i l'usuari PostgreSQL. L'ús de SSL xifra la connexió per protegir les dades durant la comunicació entre el client i el servidor.
+
 ![Imatge de la configuració SQL](images/postgresql_hba.png)
 ---
 Un cop realitzada la configuració, s’ha reiniciat el servei:

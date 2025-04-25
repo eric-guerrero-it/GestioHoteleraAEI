@@ -328,22 +328,6 @@ WHERE dni_client IN (
 
 ---
 
-### ❌ Opció 2: Eliminació física (Només si no cal mai més)
-
-Si ja no cal mantenir les dades de la targeta, es poden eliminar completament:
-
-```sql
-UPDATE pagament
-SET num_targeta = NULL
-WHERE dni_client IN (
-    SELECT dni_client
-    FROM reserva
-    WHERE dataFinal < CURRENT_DATE - INTERVAL '7 days'
-);
-````
-
----
-
 ### Automatització recomanada
 
 Es pot automatitzar aquest procés mitjançant una funció + trigger o una tasca programada (cron).

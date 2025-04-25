@@ -64,6 +64,8 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT SELECT ON TABLES TO analista_dades;
 ```
 
+![Imatge de la configuració SQL](images/sql_creacio_rols_permisos.png)
+
 ---
 
 ## 3️⃣ Connexió SSL – Justificació i Configuració

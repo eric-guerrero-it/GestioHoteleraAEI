@@ -312,29 +312,13 @@ Passat aquest període, les dades s’hauran d'anonimitzar o eliminar.
 
 ---
 
-### ✅ Opció 1: Pseudonimització (Recomanada)
+### ✅ Opció: Pseudonimització 
 
 Les dades sensibles es poden pseudonimitzar per mantenir un control però protegir la informació:
 
 ```sql
 UPDATE pagament
 SET num_targeta = 'XXXX-XXXX-XXXX-0000'
-WHERE dni_client IN (
-    SELECT dni_client
-    FROM reserva
-    WHERE dataFinal < CURRENT_DATE - INTERVAL '7 days'
-);
-````
-
----
-
-### ❌ Opció 2: Eliminació física (Només si no cal mai més)
-
-Si ja no cal mantenir les dades de la targeta, es poden eliminar completament:
-
-```sql
-UPDATE pagament
-SET num_targeta = NULL
 WHERE dni_client IN (
     SELECT dni_client
     FROM reserva
@@ -365,6 +349,24 @@ END;
 $$ LANGUAGE plpgsql;
 ````
 
+## ✅ Trigger automàtic:
+
+Així cada cop que algú afegeixi una reserva, també revisaria si ha d'esborrar targetes antigues.
+
+```sql
+CREATE OR REPLACE FUNCTION eliminar_targetes_trigger()
+RETURNS trigger AS $$
+BEGIN
+    PERFORM eliminar_targetes_antigues();
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_eliminar_targetes
+AFTER INSERT ON reserva
+EXECUTE FUNCTION eliminar_targetes_trigger();
+````
+
 ---
 
 ### 🛡️ Justificació de Seguretat i Legalitat
@@ -377,3 +379,19 @@ $$ LANGUAGE plpgsql;
 ✅ Reducció del risc d’accés indegut per part d’usuaris interns  
 
 ✅ Compliment de la legislació vigent i bones pràctiques del sector  
+
+---
+
+## Autors
+
+**Grup 12 - AEI**  
+Cicle Formatiu de Grau Superior d’**Administració de Sistemes Informàtics i Xarxes (ASIX)**  
+**INS Sa Palomera – Curs 2024/2025**
+
+
+---
+
+## 🔗 Repositori principal del projecte
+➡️ [Veure projecte principal a GitHub](../README.md)
+
+---

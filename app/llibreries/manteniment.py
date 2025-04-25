@@ -419,6 +419,315 @@ def obrir_finestra_recepcio_idiomes_nivell():
 
     tk.Button(finestra, text="Consultar Idiomes i Nivell", command=consultar_recepcio_idiomes_nivell).pack(pady=20)
 
+def obrir_finestra_recepcio_idiomes_nivell():
+    """
+    Obre una finestra per consultar els idiomes i el nivell dels treballadors de recepció.
+    """
+    finestra = tk.Toplevel()
+    finestra.title("Recepció: Idiomes i Nivell")
+    finestra.geometry("500x400")
+
+    tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
+    entrada_idhotel = tk.Entry(finestra)
+    entrada_idhotel.pack(pady=10)
+
+    def consultar_recepcio_idiomes_nivell():
+        idhotel = entrada_idhotel.get().strip()
+        if not idhotel:
+            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            return
+        try:
+            conn = connectar_bd()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT
+                    r.dni AS recepcio_dni,
+                    p.nom || ' ' || p.cognoms AS recepcio_nom,
+                    i.nom AS idioma,
+                    c.parla AS nivell_parla,
+                    c.enten AS nivell_enten,
+                    c.escriu AS nivell_escriu
+                FROM
+                    recepcio r
+                JOIN persona p ON r.dni = p.dni
+                JOIN coneixement c ON r.dni = c.dni
+                JOIN idioma i ON c.nomIdioma = i.nom
+                WHERE
+                    r.dni IN (
+                        SELECT dniTreballador FROM treballa WHERE idHotel = %s
+                    )
+                ORDER BY
+                    p.nom, p.cognoms, i.nom;
+            """, (idhotel,))
+
+            recepcio_idiomes = cursor.fetchall()
+            if not recepcio_idiomes:
+                tk.messagebox.showinfo("Resultat", "No hi ha treballadors de recepció registrats per aquest hotel.")
+            else:
+                resultats = "\n".join([f"DNI: {e[0]} | Nom: {e[1]} | Idioma: {e[2]} | Nivell de parla: {e[3]} | Nivell d'entendre: {e[4]} | Nivell d'escriure: {e[5]}" for e in recepcio_idiomes])
+                tk.messagebox.showinfo("Recepció: Idiomes i Nivell", resultats)
+
+            conn.close()
+
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+
+    tk.Button(finestra, text="Consultar Idiomes i Nivell", command=consultar_recepcio_idiomes_nivell).pack(pady=20)
+
+def obrir_finestra_cuina_categoria_revisor():
+    """
+    Obre una finestra per consultar les categories i revisors del personal de cuina.
+    """
+    finestra = tk.Toplevel()
+    finestra.title("Cuina: Categoria i Revisor")
+    finestra.geometry("500x400")
+
+    tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
+    entrada_idhotel = tk.Entry(finestra)
+    entrada_idhotel.pack(pady=10)
+
+    def consultar_cuina():
+        idhotel = entrada_idhotel.get().strip()
+        if not idhotel:
+            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            return
+        try:
+            conn = connectar_bd()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT
+                    c.dni,
+                    p.nom || ' ' || p.cognoms AS cuiner_nom,
+                    c.categoria,
+                    c.revisatPer AS cuiner_revisor
+                FROM
+                    cuina c
+                JOIN persona p ON c.dni = p.dni
+                WHERE
+                    c.dni IN (
+                        SELECT dniTreballador FROM treballa WHERE idHotel = %s
+                    )
+                ORDER BY
+                    c.categoria;
+            """, (idhotel,))
+
+            cuiners = cursor.fetchall()
+            if not cuiners:
+                tk.messagebox.showinfo("Resultat", "No hi ha treballadors de cuina registrats per aquest hotel.")
+            else:
+                resultats = "\n".join([f"DNI: {e[0]} | Nom: {e[1]} | Categoria: {e[2]} | Revisor: {e[3]}" for e in cuiners])
+                tk.messagebox.showinfo("Cuina: Categoria i Revisor", resultats)
+
+            conn.close()
+
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+
+    tk.Button(finestra, text="Consultar Cuina", command=consultar_cuina).pack(pady=20)
+
+def obrir_finestra_habitacions_per_hotel():
+    """
+    Obre una finestra per consultar les habitacions per hotel, incloent el número de l'habitació,
+    el nombre de llits, la superfície, i les característiques com la nevera i la televisió.
+    """
+    finestra = tk.Toplevel()
+    finestra.title("Habitacions per Hotel i Característiques")
+    finestra.geometry("500x400")
+
+    tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
+    entrada_idhotel = tk.Entry(finestra)
+    entrada_idhotel.pack(pady=10)
+
+    def consultar_habitacions():
+        idhotel = entrada_idhotel.get().strip()
+        if not idhotel:
+            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            return
+        try:
+            conn = connectar_bd()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT
+                    h.numero AS habitacio_numero,
+                    h.llits AS habitacio_llits,
+                    h.m2 AS habitacio_m2,
+                    h.teNevera AS habitacio_nevera,
+                    h.teTelevisio AS habitacio_televisio
+                FROM
+                    habitacio h
+                WHERE
+                    h.idHotel = %s
+                ORDER BY
+                    h.numero;
+            """, (idhotel,))
+
+            habitacions = cursor.fetchall()
+            if not habitacions:
+                tk.messagebox.showinfo("Resultat", "No hi ha habitacions registrades per aquest hotel.")
+            else:
+                resultats = "\n".join([f"Habitació {e[0]} | Llits: {e[1]} | M2: {e[2]} | Nevera: {e[3]} | Televisió: {e[4]}" for e in habitacions])
+                tk.messagebox.showinfo("Habitacions per Hotel", resultats)
+
+            conn.close()
+
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+
+    tk.Button(finestra, text="Consultar Habitacions", command=consultar_habitacions).pack(pady=20)
+
+def obrir_finestra_reserves_per_hotel():
+    """
+    Obre una finestra per consultar les reserves per hotel, incloent les dates d'inici i final de la reserva,
+    així com el client associat a cada reserva.
+    """
+    finestra = tk.Toplevel()
+    finestra.title("Reserves per Hotel (Dates, Clients)")
+    finestra.geometry("500x400")
+
+    tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
+    entrada_idhotel = tk.Entry(finestra)
+    entrada_idhotel.pack(pady=10)
+
+    def consultar_reserves():
+        idhotel = entrada_idhotel.get().strip()
+        if not idhotel:
+            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            return
+        try:
+            conn = connectar_bd()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT
+                    r.idReserva,
+                    r.dataInici,
+                    r.dataFinal,
+                    p.dni AS client_dni,
+                    p.nom || ' ' || p.cognoms AS client_nom
+                FROM
+                    reserva r
+                JOIN client c ON r.dniClient = c.dni
+                JOIN persona p ON c.dni = p.dni
+                WHERE
+                    r.idHotel = %s
+                ORDER BY
+                    r.dataInici;
+            """, (idhotel,))
+
+            reserves = cursor.fetchall()
+            if not reserves:
+                tk.messagebox.showinfo("Resultat", "No hi ha reserves registrades per aquest hotel.")
+            else:
+                resultats = "\n".join([f"Reserva ID: {r[0]} | Data Inici: {r[1]} | Data Final: {r[2]} | Client: {r[3]} - {r[4]}" for r in reserves])
+                tk.messagebox.showinfo("Reserves per Hotel", resultats)
+
+            conn.close()
+
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+
+    tk.Button(finestra, text="Consultar Reserves", command=consultar_reserves).pack(pady=20)
+
+def obrir_finestra_serveis_per_hotel():
+    """
+    Obre una finestra per consultar els serveis que ofereix un hotel específic.
+    """
+    finestra = tk.Toplevel()
+    finestra.title("Serveis que ofereix l'Hotel")
+    finestra.geometry("500x400")
+
+    tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
+    entrada_idhotel = tk.Entry(finestra)
+    entrada_idhotel.pack(pady=10)
+
+    def consultar_serveis():
+        idhotel = entrada_idhotel.get().strip()
+        if not idhotel:
+            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            return
+        try:
+            conn = connectar_bd()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT
+                    s.nom AS servei_nom,
+                    s.cost AS servei_cost
+                FROM
+                    servei s
+                JOIN hotel_servei hs ON s.idServei = hs.idServei
+                WHERE
+                    hs.idHotel = %s
+                ORDER BY
+                    s.nom;
+            """, (idhotel,))
+
+            serveis = cursor.fetchall()
+            if not serveis:
+                tk.messagebox.showinfo("Resultat", "No hi ha serveis disponibles per aquest hotel.")
+            else:
+                resultats = "\n".join([f"Servei: {s[0]} | Cost: {s[1]}" for s in serveis])
+                tk.messagebox.showinfo("Serveis per Hotel", resultats)
+
+            conn.close()
+
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+
+    tk.Button(finestra, text="Consultar Serveis", command=consultar_serveis).pack(pady=20)
+
+def obrir_finestra_solicituds_per_client():
+    """
+    Obre una finestra per consultar les sol·licituds de serveis realitzades per un client específic.
+    """
+    finestra = tk.Toplevel()
+    finestra.title("Sol·licituds de Serveis per Client")
+    finestra.geometry("500x400")
+
+    tk.Label(finestra, text="DNI del Client:").pack(pady=10)
+    entrada_dni = tk.Entry(finestra)
+    entrada_dni.pack(pady=10)
+
+    def consultar_solicituds():
+        dni_client = entrada_dni.get().strip()
+        if not dni_client:
+            tk.messagebox.showerror("Error", "Has d'introduir un DNI de client.")
+            return
+        try:
+            conn = connectar_bd()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT
+                    s.nom AS servei_nom,
+                    ss.dataHora AS sol_servei_data,
+                    ss.pagarEnCheckOut AS pagar_en_checkout
+                FROM
+                    sollicitud ss
+                JOIN servei s ON ss.idServei = s.idServei
+                WHERE
+                    ss.dniClient = %s
+                ORDER BY
+                    ss.dataHora;
+            """, (dni_client,))
+
+            sol_serveis = cursor.fetchall()
+            if not sol_serveis:
+                tk.messagebox.showinfo("Resultat", "No hi ha sol·licituds de serveis per aquest client.")
+            else:
+                resultats = "\n".join([f"Servei: {s[0]} | Data: {s[1]} | Pagar a Check-out: {'Sí' if s[2] else 'No'}" for s in sol_serveis])
+                tk.messagebox.showinfo("Sol·licituds de Serveis per Client", resultats)
+
+            conn.close()
+
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+
+    tk.Button(finestra, text="Consultar Sol·licituds", command=consultar_solicituds).pack(pady=20)
+
 
 def obrir_finestra_manteniment():
     """
@@ -446,12 +755,12 @@ def obrir_finestra_manteniment():
 
     tk.Button(root, text="Reserves per dia (hora, client, habitació)", width=50, command=obrir_finestra_reserves_per_dia).pack(pady=2)
     tk.Button(root, text="Empleats per hotel (director, gerent, funció)", width=50, command=obrir_finestra_empleats_per_hotel).pack(pady=2)
-    tk.Button(root, text="Recepció: idiomes i nivell", width=50).pack(pady=2)
-    tk.Button(root, text="Cuina: categoria i revisor", width=50).pack(pady=2)
-    tk.Button(root, text="Habitacions per hotel i característiques", width=50).pack(pady=2)
-    tk.Button(root, text="Reserves per hotel (dates, clients)", width=50).pack(pady=2)
-    tk.Button(root, text="Serveis que ofereix l'hotel", width=50).pack(pady=2)
-    tk.Button(root, text="Sol·licituds de serveis per client", width=50).pack(pady=2)
+    tk.Button(root, text="Recepció: idiomes i nivell", width=50, command=obrir_finestra_recepcio_idiomes_nivell).pack(pady=2)
+    tk.Button(root, text="Cuina: categoria i revisor", width=50, command=obrir_finestra_cuina_categoria_revisor).pack(pady=2)
+    tk.Button(root, text="Habitacions per hotel i característiques", width=50, command=obrir_finestra_habitacions_per_hotel).pack(pady=2)
+    tk.Button(root, text="Reserves per hotel (dates, clients)", width=50, command=obrir_finestra_reserves_per_hotel).pack(pady=2)
+    tk.Button(root, text="Serveis que ofereix l'hotel", width=50, command=obrir_finestra_serveis_per_hotel).pack(pady=2)
+    tk.Button(root, text="Sol·licituds de serveis per client", width=50, command=obrir_finestra_solicituds_per_client).pack(pady=2)
 
     # ───────────────────────────────
     # TRIGGERS I VALIDACIONS (PLPGSQL)

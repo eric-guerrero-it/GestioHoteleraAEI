@@ -90,6 +90,7 @@ Donar suport a les funcionalitats de l’**Annex 3** del projecte, garantint que
 ├── obrir_finestra_historial_client()            ← Opcional
 ├── obrir_finestra_manteniment()
 ````
+![image](https://github.com/user-attachments/assets/76b5fb58-ad43-46ba-8558-0038a503cdd7)
 
 ---
 

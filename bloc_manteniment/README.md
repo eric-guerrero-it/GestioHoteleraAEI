@@ -47,6 +47,45 @@ Donar suport a les funcionalitats de l’**Annex 3** del projecte, garantint que
 ### Validacions i PL/pgSQL
 - Triggers i procediments creats per validar dades i simular operacions amb PostgreSQL
 
+´´´bash
+CREATE OR REPLACE FUNCTION validar_telefon()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.telefon IS NULL OR NEW.telefon !~ '^\d{9,}$' THEN
+        RAISE EXCEPTION 'Telèfon invàlid';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_validar_telefon
+BEFORE INSERT OR UPDATE ON persona
+FOR EACH ROW
+EXECUTE FUNCTION validar_telefon();
+
+´´´
+´´´bash
+CREATE OR REPLACE FUNCTION evitar_duplicacio_reserva()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM reserva
+        WHERE dniClient = NEW.dniClient
+        AND idHotel = NEW.idHotel
+        AND NEW.dataInici BETWEEN dataInici AND dataFinal
+    ) THEN
+        RAISE EXCEPTION 'Reserva duplicada';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_evitar_duplicacio_reserva
+BEFORE INSERT ON reserva
+FOR EACH ROW
+EXECUTE FUNCTION evitar_duplicacio_reserva();
+
+´´´
 ---
 
 ## Funcionalitats opcionals implementades

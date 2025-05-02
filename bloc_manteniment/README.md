@@ -47,6 +47,7 @@ Donar suport a les funcionalitats de l’**Annex 3** del projecte, garantint que
 ### Validacions i PL/pgSQL
 - Triggers i procediments creats per validar dades i simular operacions amb PostgreSQL
 
+Validar telèfon (només dígits i mínim 9 caràcters)
 ```bash
 CREATE OR REPLACE FUNCTION validar_telefon()
 RETURNS TRIGGER AS $$
@@ -64,6 +65,7 @@ FOR EACH ROW
 EXECUTE FUNCTION validar_telefon();
 
 ```
+Evitar duplicats de reserva per client, hotel i data
 ```bash
 CREATE OR REPLACE FUNCTION evitar_duplicacio_reserva()
 RETURNS TRIGGER AS $$

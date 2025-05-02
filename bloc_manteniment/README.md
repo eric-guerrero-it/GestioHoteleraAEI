@@ -1,4 +1,4 @@
-# 🛠️ Bloc de Manteniment – Gestió Hotelera Espamus+
+# Bloc de Manteniment – Gestió Hotelera Espamus+
 
 Aquest mòdul conté la gestió principal del manteniment operatiu de la cadena hotelera: alta i modificació de dades, reserves, check-in/check-out, i consultes diverses relacionades amb hotels, clients i treballadors. Tot el codi està desenvolupat en Python amb entorn gràfic **Tkinter** i connexió a PostgreSQL.
 
@@ -23,7 +23,7 @@ Donar suport a les funcionalitats bàsiques de l’**Annex 3** del projecte, gar
 
 ---
 
-## ✅ Funcionalitats implementades
+## Funcionalitats implementades
 
 ### Alta i modificació de dades:
 - 🔹 Alta i modificació d’hotels
@@ -49,7 +49,7 @@ Donar suport a les funcionalitats bàsiques de l’**Annex 3** del projecte, gar
 
 ---
 
-## ⚙️ Llibreries utilitzades
+## Llibreries utilitzades
 
 - `tkinter`: interfície gràfica
 - `psycopg2`: connexió PostgreSQL
@@ -62,18 +62,31 @@ Donar suport a les funcionalitats bàsiques de l’**Annex 3** del projecte, gar
 /app/llibreries/manteniment.py
 
 ├── obrir_finestra_alta_modificacio_hotels()
+
 ├── obrir_finestra_alta_personal()
+
 ├── obrir_finestra_nova_reserva()
+
 ├── obrir_finestra_checkin()
+
 ├── obrir_finestra_checkout()
+
 ├── obrir_finestra_reserves_per_dia()
+
 ├── obrir_finestra_empleats_per_hotel()
+
 ├── obrir_finestra_recepcio_idiomes_nivell()
+
 ├── obrir_finestra_cuina_categoria_revisor()
+
 ├── obrir_finestra_habitacions_per_hotel()
+
 ├── obrir_finestra_reserves_per_hotel()
+
 ├── obrir_finestra_serveis_per_hotel()
+
 ├── obrir_finestra_solicituds_per_client()
+
 ├── obrir_finestra_manteniment()
 
 ---
@@ -83,7 +96,6 @@ Donar suport a les funcionalitats bàsiques de l’**Annex 3** del projecte, gar
 - ✅ Tots els requisits **obligatoris** implementats
 - ✅ Accés a la base de dades 100% funcional
 - ✅ Validacions i comprovacions d'errors
-- ✅ Preparat per entrega 02/05/2025
 
 ---
 

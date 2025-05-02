@@ -728,6 +728,70 @@ def obrir_finestra_solicituds_per_client():
 
     tk.Button(finestra, text="Consultar Sol·licituds", command=consultar_solicituds).pack(pady=20)
 
+def executar_procediment_validacio():
+    try:
+        conn = connectar_bd()
+        cursor = conn.cursor()
+        cursor.execute("SET client_min_messages = WARNING;")  # Per no veure info interna
+        cursor.execute("DROP TRIGGER IF EXISTS trg_validar_telefon ON persona CASCADE;")
+        cursor.execute("""
+            CREATE OR REPLACE FUNCTION validar_telefon()
+            RETURNS TRIGGER AS $$
+            BEGIN
+                IF NEW.telefon IS NULL OR NEW.telefon !~ '^\d{9,}$' THEN
+                    RAISE EXCEPTION 'El telèfon ha de contenir només dígits i tenir com a mínim 9 caràcters.';
+                END IF;
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+        """)
+        cursor.execute("""
+            CREATE TRIGGER trg_validar_telefon
+            BEFORE INSERT OR UPDATE ON persona
+            FOR EACH ROW
+            EXECUTE FUNCTION validar_telefon();
+        """)
+        conn.commit()
+        tk.messagebox.showinfo("Èxit", "Trigger de validació creat correctament.")
+    except Exception as e:
+        tk.messagebox.showerror("Error", f"No s'ha pogut crear el trigger:\n{e}")
+    finally:
+        conn.close()
+
+def simular_trigger_control_reserva():
+    try:
+        conn = connectar_bd()
+        cursor = conn.cursor()
+        cursor.execute("DROP TRIGGER IF EXISTS trg_evitar_duplicacio_reserva ON reserva CASCADE;")
+        cursor.execute("""
+            CREATE OR REPLACE FUNCTION evitar_duplicacio_reserva()
+            RETURNS TRIGGER AS $$
+            BEGIN
+                IF EXISTS (
+                    SELECT 1 FROM reserva
+                    WHERE dniClient = NEW.dniClient
+                    AND idHotel = NEW.idHotel
+                    AND NEW.dataInici BETWEEN dataInici AND dataFinal
+                ) THEN
+                    RAISE EXCEPTION 'Ja existeix una reserva activa per aquest client a l''hotel en aquest període.';
+                END IF;
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+        """)
+        cursor.execute("""
+            CREATE TRIGGER trg_evitar_duplicacio_reserva
+            BEFORE INSERT ON reserva
+            FOR EACH ROW
+            EXECUTE FUNCTION evitar_duplicacio_reserva();
+        """)
+        conn.commit()
+        tk.messagebox.showinfo("Èxit", "Trigger de control de duplicació activat.")
+    except Exception as e:
+        tk.messagebox.showerror("Error", f"No s'ha pogut crear el trigger:\n{e}")
+    finally:
+        conn.close()
+
 
 def obrir_finestra_manteniment():
     """

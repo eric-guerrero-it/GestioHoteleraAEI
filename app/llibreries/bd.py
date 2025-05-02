@@ -35,9 +35,9 @@ def connectar_bd():
     user = linies[1].split("=")[1].strip()
     pw = linies[2].split("=")[1].strip()
     ip = linies[3].split("=")[1].strip()
-    ssl = linies[4].split("=")[1].strip()  # SSL activat/desactivat
-    sslcert = linies[5].split("=")[1].strip()  # Ruta al certificat
-    sslkey = linies[6].split("=")[1].strip()  # Ruta a la clau privada
+    ssl = linies[4].split("=")[1].strip()  
+    sslcert = linies[5].split("=")[1].strip()  
+    sslkey = linies[6].split("=")[1].strip() 
 
      # Comprovar si els fitxers SSL existeixen
     if not os.path.isfile(sslcert):
@@ -51,7 +51,7 @@ def connectar_bd():
         user=user,
         password=pw,
         host=ip,
-        sslmode=ssl,  # Activa l'SSL
+        sslmode=ssl,
         sslcert=sslcert,
         sslkey=sslkey
     )

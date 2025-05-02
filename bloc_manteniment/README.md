@@ -52,8 +52,6 @@ Donar suport a les funcionalitats bàsiques de l’**Annex 3** del projecte, gar
 ## Llibreries utilitzades
 
 - `tkinter`: interfície gràfica
-- `psycopg2`: connexió PostgreSQL
-- `os`: gestió del fitxer de credencials
 
 ---
 

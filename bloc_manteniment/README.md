@@ -47,7 +47,7 @@ Donar suport a les funcionalitats de l’**Annex 3** del projecte, garantint que
 ### Validacions i PL/pgSQL
 - Triggers i procediments creats per validar dades i simular operacions amb PostgreSQL
 
-´´´bash
+```bash
 CREATE OR REPLACE FUNCTION validar_telefon()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -63,8 +63,8 @@ BEFORE INSERT OR UPDATE ON persona
 FOR EACH ROW
 EXECUTE FUNCTION validar_telefon();
 
-´´´
-´´´bash
+```
+```bash
 CREATE OR REPLACE FUNCTION evitar_duplicacio_reserva()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -85,7 +85,7 @@ BEFORE INSERT ON reserva
 FOR EACH ROW
 EXECUTE FUNCTION evitar_duplicacio_reserva();
 
-´´´
+```
 ---
 
 ## Funcionalitats opcionals implementades

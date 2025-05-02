@@ -6,7 +6,7 @@ Aquest mòdul conté la gestió principal del manteniment operatiu de la cadena 
 
 ## 🎯 Objectiu
 
-Donar suport a les funcionalitats bàsiques de l’**Annex 3** del projecte, garantint que el sistema permet:
+Donar suport a les funcionalitats de l’**Annex 3** del projecte, garantint que el sistema permet:
 
 - Alta i modificació d’hotels
 - Alta de personal de qualsevol tipus (recepció, cuina, altres)
@@ -19,11 +19,11 @@ Donar suport a les funcionalitats bàsiques de l’**Annex 3** del projecte, gar
 
 ## 📁 Fitxer principal
 
-- `app/llibreries/manteniment.py`: conté totes les finestres gràfiques i la connexió a la BD per realitzar les operacions requerides.
+- `app/llibreries/manteniment.py`: conté totes les finestres gràfiques i connexió a la BD per realitzar les operacions requerides.
 
 ---
 
-## Funcionalitats implementades
+## ✅ Funcionalitats obligatòries implementades
 
 ### Alta i modificació de dades:
 - 🔹 Alta i modificació d’hotels
@@ -49,61 +49,66 @@ Donar suport a les funcionalitats bàsiques de l’**Annex 3** del projecte, gar
 
 ---
 
-## Llibreries utilitzades
+## 🔹 Funcionalitats opcionals implementades
 
-- `tkinter`: interfície gràfica
+- 🛏️ **Reserves futures per habitació**  
+  Amb la funció `obrir_finestra_reserves_per_habitacio()`, es poden consultar les reserves futures d'una habitació, amb data d’arribada, sortida i client.
+
+- 📖 **Historial de serveis d’un client**  
+  Amb `obrir_finestra_historial_client()`, es poden consultar totes les reserves i serveis utilitzats per un client concret.
 
 ---
 
-## 📂 Estructura
+## 🔺 Funcionalitats “top” pendents
 
-/app/llibreries/manteniment.py
-
-├── obrir_finestra_alta_modificacio_hotels()
-
-├── obrir_finestra_alta_personal()
-
-├── obrir_finestra_nova_reserva()
-
-├── obrir_finestra_checkin()
-
-├── obrir_finestra_checkout()
-
-├── obrir_finestra_reserves_per_dia()
-
-├── obrir_finestra_empleats_per_hotel()
-
-├── obrir_finestra_recepcio_idiomes_nivell()
-
-├── obrir_finestra_cuina_categoria_revisor()
-
-├── obrir_finestra_habitacions_per_hotel()
-
-├── obrir_finestra_reserves_per_hotel()
-
-├── obrir_finestra_serveis_per_hotel()
-
-├── obrir_finestra_solicituds_per_client()
-
-├── obrir_finestra_manteniment()
+- ❌ Proposta de dates alternatives o altres hotels si no hi ha disponibilitat
+- ❌ Frontend complet amb Tkinter per totes les funcions
 
 ---
 
 ## 🧪 Estat del lliurament
 
-- ✅ Tots els requisits **obligatoris** implementats
-- ✅ Accés a la base de dades 100% funcional
-- ✅ Validacions i comprovacions d'errors
+- ✅ Requisits **obligatoris** implementats
+- ✅ Requisits **opcionals** implementats (2)
+- ✅ Validació de dades mitjançant PL/pgSQL
+- ✅ Entorn funcional i estable
 
 ---
 
-## 👥 Autors
+## 📂 Estructura de funcions
 
-**Grup 12 – AEI**  
-ASIX – INS Sa Palomera  
-Curs 2024/2025
+`app/llibreries/manteniment.py`
+
+```text
+├── obrir_finestra_alta_modificacio_hotels()
+├── obrir_finestra_alta_personal()
+├── obrir_finestra_nova_reserva()
+├── obrir_finestra_checkin()
+├── obrir_finestra_checkout()
+├── obrir_finestra_reserves_per_dia()
+├── obrir_finestra_empleats_per_hotel()
+├── obrir_finestra_recepcio_idiomes_nivell()
+├── obrir_finestra_cuina_categoria_revisor()
+├── obrir_finestra_habitacions_per_hotel()
+├── obrir_finestra_reserves_per_hotel()
+├── obrir_finestra_serveis_per_hotel()
+├── obrir_finestra_solicituds_per_client()
+├── obrir_finestra_reserves_per_habitacio()      ← Opcional
+├── obrir_finestra_historial_client()            ← Opcional
+├── obrir_finestra_manteniment()
+````
 
 ---
 
-## 🔗 Repositori principal
-➡️ [Torna al projecte principal](../README.md)
+## Llibreries utilitzades 
+- `tkinter`: interfície gràfica
+
+--- 
+
+## 👥 Autors 
+
+**Grup 12 – AEI** ASIX – INS Sa Palomera Curs 2024/2025 
+
+--- 
+
+## 🔗 Repositori principal ➡️ [Torna al projecte principal](../README.md)

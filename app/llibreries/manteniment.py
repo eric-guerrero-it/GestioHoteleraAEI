@@ -792,6 +792,97 @@ def simular_trigger_control_reserva():
     finally:
         conn.close()
 
+def obrir_finestra_reserves_per_habitacio():
+    """
+    Obre una finestra per consultar les reserves futures d’una habitació.
+    Mostra la data d’arribada, sortida i el client.
+    """
+    finestra = tk.Toplevel()
+    finestra.title("Reserves futures per Habitació")
+    finestra.geometry("500x400")
+
+    tk.Label(finestra, text="ID de l'Habitació:").pack(pady=10)
+    entrada_idhabitacio = tk.Entry(finestra)
+    entrada_idhabitacio.pack(pady=10)
+
+    def consultar_reserves():
+        idhabitacio = entrada_idhabitacio.get().strip()
+        if not idhabitacio:
+            tk.messagebox.showerror("Error", "Has d'introduir un ID d'habitació.")
+            return
+        try:
+            conn = connectar_bd()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT r.dataInici, r.dataFinal, p.nom || ' ' || p.cognoms AS client
+                FROM reserva r
+                JOIN client c ON r.dniClient = c.dni
+                JOIN persona p ON c.dni = p.dni
+                JOIN reserva_habitacio rh ON r.idReserva = rh.idReserva
+                WHERE rh.idHabitacio = %s AND r.dataInici >= CURRENT_DATE
+                ORDER BY r.dataInici;
+            """, (idhabitacio,))
+
+            reserves = cursor.fetchall()
+            if not reserves:
+                tk.messagebox.showinfo("Resultat", "No hi ha reserves futures per aquesta habitació.")
+            else:
+                resultats = "\n".join([f"Entrada: {r[0]} | Sortida: {r[1]} | Client: {r[2]}" for r in reserves])
+                tk.messagebox.showinfo("Reserves futures", resultats)
+
+            conn.close()
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"No s'ha pogut consultar:\n{e}")
+
+    tk.Button(finestra, text="Consultar Reserves", command=consultar_reserves).pack(pady=20)
+
+def obrir_finestra_historial_client():
+    """
+    Obre una finestra per consultar les visites i serveis utilitzats per un client.
+    """
+    finestra = tk.Toplevel()
+    finestra.title("Historial del Client")
+    finestra.geometry("500x400")
+
+    tk.Label(finestra, text="DNI del Client:").pack(pady=10)
+    entrada_dni = tk.Entry(finestra)
+    entrada_dni.pack(pady=10)
+
+    def consultar_historial():
+        dni = entrada_dni.get().strip()
+        if not dni:
+            tk.messagebox.showerror("Error", "Has d'introduir un DNI.")
+            return
+        try:
+            conn = connectar_bd()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                SELECT r.dataInici, r.dataFinal, s.nom AS servei
+                FROM reserva r
+                LEFT JOIN sollicitud ss ON r.idReserva = ss.idReserva
+                LEFT JOIN servei s ON ss.idServei = s.idServei
+                WHERE r.dniClient = %s
+                ORDER BY r.dataInici;
+            """, (dni,))
+
+            resultats = cursor.fetchall()
+            if not resultats:
+                tk.messagebox.showinfo("Resultat", "No s'han trobat visites ni serveis per aquest client.")
+            else:
+                resposta = "\n".join([
+                    f"Estada: {r[0]} → {r[1]} | Servei: {r[2] if r[2] else 'Cap'}"
+                    for r in resultats
+                ])
+                tk.messagebox.showinfo("Historial del Client", resposta)
+
+            conn.close()
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"No s'ha pogut consultar:\n{e}")
+
+    tk.Button(finestra, text="Consultar Historial", command=consultar_historial).pack(pady=20)
+
 
 def obrir_finestra_manteniment():
     """
@@ -825,12 +916,17 @@ def obrir_finestra_manteniment():
     tk.Button(root, text="Reserves per hotel (dates, clients)", width=50, command=obrir_finestra_reserves_per_hotel).pack(pady=2)
     tk.Button(root, text="Serveis que ofereix l'hotel", width=50, command=obrir_finestra_serveis_per_hotel).pack(pady=2)
     tk.Button(root, text="Sol·licituds de serveis per client", width=50, command=obrir_finestra_solicituds_per_client).pack(pady=2)
+    #Opcional
+    tk.Button(root, text="Reserves futures per habitació", width=50, command=obrir_finestra_reserves_per_habitacio).pack(pady=2)
+    tk.Button(root, text="Historial de visites i serveis per client", width=50, command=obrir_finestra_historial_client).pack(pady=2)
+
 
     # ───────────────────────────────
     # TRIGGERS I VALIDACIONS (PLPGSQL)
     tk.Label(root, text="Gestió i validació amb PL/pgSQL", font=("Arial", 12, "bold")).pack(pady=10)
 
-    tk.Button(root, text="Executar procediments de validació", width=40).pack(pady=2)
-    tk.Button(root, text="Simular trigger de control", width=40).pack(pady=2)
+    tk.Button(root, text="Executar procediments de validació", width=40, command=executar_procediment_validacio).pack(pady=2)
+    tk.Button(root, text="Simular trigger de control", width=40, command=simular_trigger_control_reserva).pack(pady=2)
+
 
     root.mainloop()

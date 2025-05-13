@@ -51,7 +51,7 @@ SELECT * FROM pg_stat_replication;
 SELECT pg_is_in_recovery();  -- Ha de retornar true
 ```
 
-### Simulació de failover:
+## Simulació de failover:
 
 # 1. Aturar node principal
 sudo systemctl stop postgresql

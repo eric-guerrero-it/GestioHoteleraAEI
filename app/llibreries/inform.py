@@ -82,7 +82,7 @@ def mostrar_informe_simulat():
             JOIN TREBALLADOR tr ON t.dnitreballador = tr.DNI
             JOIN PERSONA p ON p.DNI = tr.DNI
             WHERE h.idHotel = %s
-            ORDER BY treballador;
+            ORDER BY t.dnitreballador;
             """
             cursor.execute(query, (hotel_id,))
             headers = ["Treballador", "Hotel", "Tipus"]

@@ -1,11 +1,11 @@
-# 🛡️ Bloc d’Alta Disponibilitat – Gestió Hotelera Espamus+
+# Bloc d’Alta Disponibilitat – Gestió Hotelera Espamus+
 
 Aquest mòdul implementa la infraestructura d'alta disponibilitat i còpies de seguretat per al sistema de gestió hotelera **Espamus+**.  
 Assegura la **continuïtat del servei 24x7**, la **resiliència a fallades** i la **recuperació de dades**.
 
 ---
 
-## 🎯 Objectius
+## Objectius
 
 - Garantir la **disponibilitat contínua** del servei.
 - Permetre **recuperació davant fallades** o errors humans.
@@ -14,9 +14,9 @@ Assegura la **continuïtat del servei 24x7**, la **resiliència a fallades** i l
 
 ---
 
-## 🧰 Requisit 1 – Infraestructura de Maquinari
+## Requisit 1 – Infraestructura de Maquinari
 
-### 📡 Nodes de base de dades (actiu-passiu)
+### Nodes de base de dades (actiu-passiu)
 
 | Component          | Node Primari (Actiu)         | Node Rèplica (Passiu)       |
 |--------------------|------------------------------|-----------------------------|
@@ -27,7 +27,7 @@ Assegura la **continuïtat del servei 24x7**, la **resiliència a fallades** i l
 | **Xarxa**          | 1 Gbps Ethernet              | 1 Gbps Ethernet             |
 | **Rol**            | PostgreSQL actiu + SSL       | PostgreSQL hot standby + SSL|
 
-### 💾 Servidor de Backups
+### Servidor de Backups
 
 | Component        | Valor                                 |
 |------------------|----------------------------------------|
@@ -39,14 +39,14 @@ Assegura la **continuïtat del servei 24x7**, la **resiliència a fallades** i l
 
 ---
 
-## 🔁 Requisit 2 – Rèplica de Base de Dades
+## Requisit 2 – Rèplica de Base de Dades
 
-### 🔄 Tipus de replicació
+### Tipus de replicació
 
 - PostgreSQL **Streaming Replication**
 - Mode **actiu-passiu** amb fitxer `standby.signal`
 
-### 🔍 Verificació de l’estat
+### Verificació de l’estat
 
 ```sql
 -- Al node primari:
@@ -56,7 +56,7 @@ SELECT * FROM pg_stat_replication;
 SELECT pg_is_in_recovery();  -- Ha de retornar true
 ```
 
-## 🧪 Simulació de failover
+## Simulació de failover
 
 ```bash
 # 1. Aturar el node principal
@@ -68,9 +68,9 @@ sudo -u postgres pg_ctlcluster 14 main promote
 
 ---
 
-## 📦 Requisit 3 – Sistema de Còpies de Seguretat
+## Requisit 3 – Sistema de Còpies de Seguretat
 
-### 🧰 Còpia física (hot backup) amb `pg_basebackup`
+### Còpia física (hot backup) amb `pg_basebackup`
 
 ```bash
 #!/bin/bash
@@ -95,13 +95,13 @@ pg_basebackup -h 10.94.254.76 -U replicador -D "$DEST" -Ft -z -P --wal-method=st
 
 ---
 
-## 🔐 Requisit 4 – Eliminació Segura de Dades de Targetes
+## Requisit 4 – Eliminació Segura de Dades de Targetes
 
 Evitem conservar dades sensibles com les targetes de crèdit després del període de retenció (**7 dies després del checkout**), seguint els principis del **RGPD**.
 
 ---
 
-### 🔧 Procediment PL/pgSQL
+### Procediment PL/pgSQL
 
 ```sql
 CREATE OR REPLACE PROCEDURE netejar_targetes()

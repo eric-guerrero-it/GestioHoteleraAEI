@@ -92,3 +92,67 @@ pg_basebackup -h 10.94.254.76 -U replicador -D "$DEST" -Ft -z -P --wal-method=st
 - Inclou WAL per suportar recuperació puntual (PITR)
 
 - Compatible amb entorns 24x7
+
+---
+
+## 🔐 Requisit 4 – Eliminació Segura de Dades de Targetes
+
+Evitem conservar dades sensibles com les targetes de crèdit després del període de retenció (**7 dies després del checkout**), seguint els principis del **RGPD**.
+
+---
+
+### 🔧 Procediment PL/pgSQL
+
+```sql
+CREATE OR REPLACE PROCEDURE netejar_targetes()
+LANGUAGE plpgsql AS $$
+BEGIN
+  UPDATE pagament
+  SET num_targeta = 'XXXX-XXXX-XXXX-0000'
+  WHERE dni_client IN (
+    SELECT dni_client
+    FROM reserva
+    WHERE dataFinal < CURRENT_DATE - INTERVAL '7 days'
+  );
+END;
+$$;
+```
+
+### Trigger associat
+
+```sql
+CREATE OR REPLACE FUNCTION trigger_neteja_targetes()
+RETURNS TRIGGER AS $$
+BEGIN
+  CALL netejar_targetes();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_neteges_targetes
+AFTER UPDATE ON reserva
+FOR EACH ROW
+WHEN (NEW.dataFinal IS NOT NULL)
+EXECUTE FUNCTION trigger_neteja_targetes();
+```
+
+## 🗂️ Arxius importants
+
+| Fitxer / Directori                   | Descripció                                        |
+|--------------------------------------|---------------------------------------------------|
+| `/usr/local/bin/backup_postgres.sh` | Script automatitzat de còpia de seguretat         |
+| `/backups_postgres/`                | Carpeta on es desen les còpies                    |
+| `postgresql.auto.conf`              | Connexió al node principal des del secundari      |
+| `standby.signal`                    | Activació del mode *hot standby*                  |
+
+## 👥 Autors
+
+**Grup 12 – AEI**  
+ASIX – INS Sa Palomera  
+Curs 2024/2025
+
+---
+
+## 🔗 Repositori principal
+
+➡️ [Torna al projecte principal](../README.md)

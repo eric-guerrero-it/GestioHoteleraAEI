@@ -4,13 +4,13 @@ Aquest document descriu la implementació tècnica del **Bloc de Consultes i Inf
 
 ---
 
-## 🎯 Objectiu
+## Objectiu
 
 Aquest sistema permet consultar i mostrar, en format gràfic i tabulat, informació rellevant per a la gestió d’una cadena hotelera.
 
 ---
 
-## ⭐ Funcionalitat TOP implementada
+## Funcionalitat TOP implementada
 
 Una de les propostes opcionals destacades (TOP) de l’enunciat consistia en crear una **interfície gràfica amb Tkinter** que facilités la visualització dels informes i millorés l’experiència de l’usuari.
 
@@ -32,7 +32,7 @@ S’han desenvolupat els següents informes descrits a l’annex 4:
 
 ---
 
-## 🧪 Inserció de dades
+## Inserció de dades
 
 Per poder generar els informes, s’ha realitzat la inserció de dades a la base de dades `gestiohoteleraaei`, incloent:
 
@@ -44,7 +44,7 @@ Per poder generar els informes, s’ha realitzat la inserció de dades a la base
 
 ---
 
-## 🛠️ Tecnologia utilitzada
+## Tecnologia utilitzada
 
 - **Llenguatge:** Python  
 - **Llibreries:**  
@@ -55,7 +55,7 @@ Per poder generar els informes, s’ha realitzat la inserció de dades a la base
 
 ---
 
-## ⚙️ Característiques tècniques
+## Característiques tècniques
 
 - Interfície gràfica clara i dividida en seccions:
   - Selecció de l’informe amb radiobuttons  
@@ -77,3 +77,33 @@ app/
 └── llibreries/
     ├── bd.py           # Gestió de la connexió segura a la base de dades PostgreSQL mitjançant SSL
     └── inform.py       # Bloc de consultes: execució de consultes i visualització amb Tkinter
+```
+
+---
+
+## Seguretat
+
+- La connexió a la base de dades PostgreSQL es fa de forma segura mitjançant el mòdul `bd.py`, que utilitza el paràmetre `sslmode` per establir connexions amb SSL.
+
+- Aquesta configuració assegura que la informació viatja de forma xifrada entre l’aplicació i el servidor de base de dades.
+
+---
+
+## Llibreries i instal·lació
+
+Les llibreries utilitzades es poden instal·lar amb pip:
+
+```bash
+pip install tabulate
+pip install psycopg2-binary
+```
+
+--- 
+
+## 👥 Autors 
+
+**Grup 12 – AEI** ASIX – INS Sa Palomera Curs 2024/2025 
+
+--- 
+
+## 🔗 Repositori principal  [Torna al projecte principal](../README.md)

@@ -145,6 +145,16 @@ EXECUTE FUNCTION trigger_neteja_targetes();
 | `postgresql.auto.conf`              | Connexió al node principal des del secundari      |
 | `standby.signal`                    | Activació del mode *hot standby*                  |
 
+### Fitxers SQL i scripts
+
+- [`backup_postgres.sh`](./backup_postgres.sh): script automatitzat que realitza una còpia física del node principal utilitzant `pg_basebackup`, amb compressió i suport per PITR.  
+  ➤ S'utilitza al Requisit 3 i està planificat via cron.
+
+- [`neteja_targetes.sql`](./neteja_targetes.sql): fitxer que conté el procediment i trigger per netejar dades de targetes de crèdit segons RGPD.  
+  ➤ Forma part del Requisit 4 (eliminació segura de dades).
+
+---
+
 ## 👥 Autors
 
 **Grup 12 – AEI**  

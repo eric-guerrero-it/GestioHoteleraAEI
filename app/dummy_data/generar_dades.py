@@ -4,7 +4,7 @@ from datetime import datetime
 import sys
 import os
 
-# Afegeix la ruta a llibreries per importar connectar_bd
+# afegir la ruta a llibreries per importar connectar_bd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'llibreries')))
 from bd import connectar_bd
 
@@ -239,9 +239,6 @@ def generar_reserves(n=100000):
                     INSERT INTO RESERVA (dniClient, idHotel, dataInici, dataFinal)
                     VALUES (%s, %s, %s, %s)
                 """, batch_reserva)
-
-                # Opcional: afegir també línies a RESERVA_HABITACIO si vols
-                # Necessitaria ID reserva, pots modificar l'esquema si cal
 
                 conn.commit()
                 batch_reserva.clear()

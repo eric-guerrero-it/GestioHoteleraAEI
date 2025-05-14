@@ -200,6 +200,60 @@ def generar_activitats(n=150000):
         cur.close()
         conn.close()
 
+def generar_reserves(n=100000):
+    conn = connectar_bd()
+    cur = conn.cursor()
+    try:
+        # Obtenir DNI de clients
+        cur.execute("SELECT dni FROM CLIENT")
+        clients = [r[0] for r in cur.fetchall()]
+        
+        # Obtenir ID dels hotels
+        cur.execute("SELECT idHotel FROM HOTEL")
+        hotels = [r[0] for r in cur.fetchall()]
+
+        # Obtenir habitacions
+        cur.execute("SELECT idHabitacio, idHotel FROM HABITACIO")
+        habitacions = cur.fetchall()
+
+        if not clients or not hotels or not habitacions:
+            print("❌ Falten clients, hotels o habitacions.")
+            return
+
+        batch_reserva = []
+        batch_reserva_habitacio = []
+
+        for i in range(1, n + 1):
+            dni_client = random.choice(clients)
+            id_hotel = random.choice(hotels)
+
+            data_inici = faker_default.date_between(start_date='-30d', end_date='+90d')
+            durada = random.randint(1, 14)
+            data_final = data_inici + timedelta(days=durada)
+
+            batch_reserva.append((dni_client, id_hotel, data_inici, data_final))
+
+            if i % 500 == 0 or i == n:
+                # Inserim reserves i recuperem els ID generats
+                cur.executemany("""
+                    INSERT INTO RESERVA (dniClient, idHotel, dataInici, dataFinal)
+                    VALUES (%s, %s, %s, %s)
+                """, batch_reserva)
+
+                # Opcional: afegir també línies a RESERVA_HABITACIO si vols
+                # Necessitaria ID reserva, pots modificar l'esquema si cal
+
+                conn.commit()
+                batch_reserva.clear()
+                print(f"{i}/{n} reserves generades...")
+
+        print("✅ Totes les reserves generades correctament.")
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error generant reserves: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
 if __name__ == "__main__":
     print("🔄 Generant dades dummy...")
@@ -207,5 +261,7 @@ if __name__ == "__main__":
     generar_clients(50000)
     generar_treballadors(10000)
     generar_activitats(150000)
+    generar_reserves(100000)
     print("🎉 Totes les dades generades correctament.")
+
 

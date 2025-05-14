@@ -1,12 +1,12 @@
 from faker import Faker
 import random
-from datetime import datetime, timedelta
+from datetime import datetime
 import sys
 import os
 
+# Afegeix la ruta a llibreries per importar connectar_bd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'llibreries')))
-
-from llibreries.bd import connectar_bd
+from bd import connectar_bd
 
 # Faker amb idiomes especials
 faker_default = Faker()
@@ -28,50 +28,184 @@ def nom_mixed():
 def generar_hotels(n=100):
     conn = connectar_bd()
     cur = conn.cursor()
-    for _ in range(n):
-        cur.execute("""
-            INSERT INTO HOTEL (nom, estrelles, adreca, poblacio, web, telefon)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (
-            nom_mixed(),
-            random.randint(1, 5),
-            faker_default.address(),
-            faker_default.city(),
-            faker_default.url(),
-            '999' + faker_default.msisdn()[:7]
-        ))
-    conn.commit()
-    cur.close()
-    conn.close()
+    try:
+        for _ in range(n):
+            cur.execute("""
+                INSERT INTO HOTEL (nom, estrelles, adreca, poblacio, web, telefon)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (
+                nom_mixed(),
+                random.randint(1, 5),
+                faker_default.address(),
+                faker_default.city(),
+                faker_default.url(),
+                '999' + faker_default.msisdn()[:7]
+            ))
+        conn.commit()
+        print(f"✅ {n} hotels generats correctament.")
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error generant hotels: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
-def generar_clients(n=100):
+def generar_clients(n=50000):
     conn = connectar_bd()
     cur = conn.cursor()
-    for _ in range(n):
-        dni = faker_default.unique.bothify(text='########A')
-        nom = nom_mixed()
-        cognoms = faker_default.last_name() + " " + faker_default.last_name()
-        telefon = '999' + faker_default.msisdn()[:7]
-        adreca = faker_default.address()
-        data_naixement = faker_default.date_of_birth(minimum_age=18, maximum_age=90)
+    try:
+        batch_persona = []
+        batch_client = []
+        for i in range(1, n + 1):
+            dni = faker_default.unique.bothify(text='########A')
+            nom = nom_mixed()
+            cognoms = faker_default.last_name() + " " + faker_default.last_name()
+            telefon = '999' + faker_default.msisdn()[:7]
+            adreca = faker_default.address()
+            data_naixement = faker_default.date_of_birth(minimum_age=18, maximum_age=90)
 
-        cur.execute("""
-            INSERT INTO PERSONA (dni, nom, cognoms, telefon, adreca, dataNaixement)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (dni, nom, cognoms, telefon, adreca, data_naixement))
-        
-        cur.execute("""
-            INSERT INTO CLIENT (dni)
-            VALUES (%s)
-        """, (dni,))
-    conn.commit()
-    cur.close()
-    conn.close()
+            batch_persona.append((dni, nom, cognoms, telefon, adreca, data_naixement))
+            batch_client.append((dni,))
 
+            if i % 500 == 0 or i == n:
+                cur.executemany("""
+                    INSERT INTO PERSONA (dni, nom, cognoms, telefon, adreca, dataNaixement)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, batch_persona)
+
+                cur.executemany("""
+                    INSERT INTO CLIENT (dni)
+                    VALUES (%s)
+                """, batch_client)
+
+                conn.commit()
+                batch_persona.clear()
+                batch_client.clear()
+                print(f"{i}/{n} clients generats...")
+
+        print("✅ Tots els clients generats correctament.")
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error generant clients: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+def generar_treballadors(n=10000):
+    conn = connectar_bd()
+    cur = conn.cursor()
+    try:
+        tipus_treballador = ['cuina', 'recepcio', 'neteja', 'manteniment', 'direccio']
+        id_hotels = []
+
+        # Recuperar ID d'hotels existents per assignar-los aleatòriament
+        cur.execute("SELECT idHotel FROM HOTEL")
+        rows = cur.fetchall()
+        id_hotels = [r[0] for r in rows]
+
+        if not id_hotels:
+            print("❌ No hi ha hotels a la base de dades. Primer executa generar_hotels().")
+            return
+
+        batch_persona = []
+        batch_treballador = []
+        batch_treballa = []
+
+        for i in range(1, n + 1):
+            dni = faker_default.unique.bothify(text='########B')
+            nom = nom_mixed()
+            cognoms = faker_default.last_name() + " " + faker_default.last_name()
+            telefon = '999' + faker_default.msisdn()[:7]
+            adreca = faker_default.address()
+            data_naixement = faker_default.date_of_birth(minimum_age=18, maximum_age=65)
+
+            tipus = random.choice(tipus_treballador)
+            hotel_id = random.choice(id_hotels)
+
+            batch_persona.append((dni, nom, cognoms, telefon, adreca, data_naixement))
+            batch_treballador.append((dni, tipus))
+            batch_treballa.append((dni, hotel_id))
+
+            if i % 500 == 0 or i == n:
+                cur.executemany("""
+                    INSERT INTO PERSONA (dni, nom, cognoms, telefon, adreca, dataNaixement)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, batch_persona)
+
+                cur.executemany("""
+                    INSERT INTO TREBALLADOR (dni, tipusTreballador)
+                    VALUES (%s, %s)
+                """, batch_treballador)
+
+                cur.executemany("""
+                    INSERT INTO TREBALLA (dniTreballador, idHotel)
+                    VALUES (%s, %s)
+                """, batch_treballa)
+
+                conn.commit()
+                batch_persona.clear()
+                batch_treballador.clear()
+                batch_treballa.clear()
+                print(f"{i}/{n} treballadors generats...")
+
+        print("✅ Tots els treballadors generats correctament.")
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error generant treballadors: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+def generar_activitats(n=150000):
+    conn = connectar_bd()
+    cur = conn.cursor()
+    try:
+        # Recuperar ID dels hotels
+        cur.execute("SELECT idHotel FROM HOTEL")
+        hotels = [r[0] for r in cur.fetchall()]
+
+        if not hotels:
+            print("❌ No hi ha hotels a la base de dades.")
+            return
+
+        noms_activitats = [
+            "Visita guiada", "Spa", "Taller de cuina", "Excursió", "Piscina nocturna",
+            "Cata de vins", "Massatge relaxant", "Ioga matinal", "Cinema a la fresca", "Karaoke"
+        ]
+
+        batch = []
+        for i in range(1, n + 1):
+            id_hotel = random.choice(hotels)
+            nom = random.choice(noms_activitats)
+            descripcio = faker_default.text(max_nb_chars=100)
+            data = faker_default.date_between(start_date='-1y', end_date='+6m')
+            preu = round(random.uniform(10.0, 100.0), 2)
+
+            batch.append((id_hotel, nom, descripcio, data, preu))
+
+            if i % 1000 == 0 or i == n:
+                cur.executemany("""
+                    INSERT INTO ACTIVITAT (idHotel, nom, descripcio, data, preu)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, batch)
+                conn.commit()
+                batch.clear()
+                print(f"{i}/{n} activitats generades...")
+
+        print("✅ Totes les activitats generades correctament.")
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error generant activitats: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
 
 if __name__ == "__main__":
-    print("Generant dades dummy...")
-    generar_hotels()
-    generar_clients()
-    print("Dades generades correctament. Pots consultar la base de dades.")
+    print("🔄 Generant dades dummy...")
+    generar_hotels(100)
+    generar_clients(50000)
+    generar_treballadors(10000)
+    generar_activitats(150000)
+    print("🎉 Totes les dades generades correctament.")
+

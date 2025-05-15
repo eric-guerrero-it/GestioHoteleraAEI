@@ -308,6 +308,40 @@ def crear_indexos():
         cur.close()
         conn.close()
 
+def generar_habitacions(per_hotel=10):
+    conn = connectar_bd()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT idHotel FROM HOTEL")
+        hotels = [r[0] for r in cur.fetchall()]
+
+        if not hotels:
+            print("❌ No hi ha hotels per crear habitacions.")
+            return
+
+        for id_hotel in hotels:
+            for i in range(1, per_hotel + 1):
+                cur.execute("""
+                    INSERT INTO HABITACIO (numero, llits, m2, teNevera, teTelevisio, idHotel)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (
+                    i,
+                    random.randint(1, 4),
+                    round(random.uniform(10.0, 40.0), 2),
+                    random.choice([True, False]),
+                    random.choice([True, False]),
+                    id_hotel
+                ))
+
+        conn.commit()
+        print(f"✅ Habitacions generades per a {len(hotels)} hotels.")
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error generant habitacions: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
 if __name__ == "__main__":
     print("🔄 Generant dades dummy...")
     generar_hotels(100)
@@ -316,4 +350,5 @@ if __name__ == "__main__":
     generar_activitats(150000)
     generar_reserves(100000)
     crear_indexos()
+    generar_habitacions(15)
     print("🎉 Totes les dades generades correctament.")

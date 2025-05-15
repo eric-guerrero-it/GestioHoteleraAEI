@@ -64,10 +64,10 @@ def generar_hotels(n=100):
                 '999' + faker_default.msisdn()[:7]
             ))
         conn.commit()
-        print(f"✅ {n} hotels generats correctament.")
+        print(f"{n} hotels generats correctament.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error generant hotels: {e}")
+        print(f"Error generant hotels: {e}")
     finally:
         cur.close()
         conn.close()
@@ -105,10 +105,10 @@ def generar_clients(n=50000):
                 batch_client.clear()
                 print(f"{i}/{n} clients generats...")
 
-        print("✅ Tots els clients generats correctament.")
+        print("Tots els clients generats correctament.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error generant clients: {e}")
+        print(f"Error generant clients: {e}")
     finally:
         cur.close()
         conn.close()
@@ -125,7 +125,7 @@ def generar_treballadors(n=10000):
         id_hotels = [r[0] for r in rows]
 
         if not id_hotels:
-            print("❌ No hi ha hotels a la base de dades. Primer executa generar_hotels().")
+            print("No hi ha hotels a la base de dades. Primer executa generar_hotels().")
             return
 
         batch_persona = []
@@ -169,10 +169,10 @@ def generar_treballadors(n=10000):
                 batch_treballa.clear()
                 print(f"{i}/{n} treballadors generats...")
 
-        print("✅ Tots els treballadors generats correctament.")
+        print("Tots els treballadors generats correctament.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error generant treballadors: {e}")
+        print(f"Error generant treballadors: {e}")
     finally:
         cur.close()
         conn.close()
@@ -185,7 +185,7 @@ def generar_activitats(n=150000):
         hotels = [r[0] for r in cur.fetchall()]
 
         if not hotels:
-            print("❌ No hi ha hotels a la base de dades.")
+            print("No hi ha hotels a la base de dades.")
             return
 
         noms_activitats = [
@@ -212,10 +212,10 @@ def generar_activitats(n=150000):
                 batch.clear()
                 print(f"{i}/{n} activitats generades...")
 
-        print("✅ Totes les activitats generades correctament.")
+        print("Totes les activitats generades correctament.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error generant activitats: {e}")
+        print(f"Error generant activitats: {e}")
     finally:
         cur.close()
         conn.close()
@@ -239,7 +239,7 @@ def generar_reserves(n=100000):
             habitacions_per_hotel.setdefault(idHot, []).append(idHab)
 
         if not clients or not hotels or not habitacions:
-            print("❌ Falten clients, hotels o habitacions.")
+            print("Falten clients, hotels o habitacions.")
             return
 
         for i in range(1, n + 1):
@@ -273,10 +273,10 @@ def generar_reserves(n=100000):
                 print(f"{i}/{n} reserves generades...")
 
         conn.commit()
-        print("✅ Totes les reserves (i habitacions) generades correctament.")
+        print("Totes les reserves (i habitacions) generades correctament.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error generant reserves: {e}")
+        print(f"Error generant reserves: {e}")
     finally:
         cur.close()
         conn.close()
@@ -285,7 +285,7 @@ def crear_indexos():
     conn = connectar_bd()
     cur = conn.cursor()
     try:
-        print("⚙️ Creant índexs útils per a consultes...")
+        print("Creant índexs útils per a consultes...")
 
         indexos = [
             "CREATE INDEX IF NOT EXISTS idx_reserva_dni ON RESERVA(dniClient);",
@@ -299,11 +299,11 @@ def crear_indexos():
             cur.execute(idx)
 
         conn.commit()
-        print("✅ Índexs creats correctament.")
+        print("Índexs creats correctament.")
 
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error creant índexs: {e}")
+        print(f"Error creant índexs: {e}")
     finally:
         cur.close()
         conn.close()
@@ -316,7 +316,7 @@ def generar_habitacions(per_hotel=10):
         hotels = [r[0] for r in cur.fetchall()]
 
         if not hotels:
-            print("❌ No hi ha hotels per crear habitacions.")
+            print("No hi ha hotels per crear habitacions.")
             return
 
         for id_hotel in hotels:
@@ -334,10 +334,10 @@ def generar_habitacions(per_hotel=10):
                 ))
 
         conn.commit()
-        print(f"✅ Habitacions generades per a {len(hotels)} hotels.")
+        print(f"Habitacions generades per a {len(hotels)} hotels.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error generant habitacions: {e}")
+        print(f"Error generant habitacions: {e}")
     finally:
         cur.close()
         conn.close()
@@ -351,5 +351,4 @@ if __name__ == "__main__":
     generar_habitacions(15)
     generar_reserves(100000)
     crear_indexos()
-    print("🎉 Totes les dades generades correctament.")
-
+    print("Totes les dades generades correctament.")

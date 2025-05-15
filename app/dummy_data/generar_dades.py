@@ -266,6 +266,34 @@ def generar_reserves(n=100000):
         cur.close()
         conn.close()
 
+def crear_indexos():
+    conn = connectar_bd()
+    cur = conn.cursor()
+    try:
+        print("⚙️ Creant índexs útils per a consultes...")
+
+        indexos = [
+            "CREATE INDEX IF NOT EXISTS idx_reserva_dni ON RESERVA(dniClient);",
+            "CREATE INDEX IF NOT EXISTS idx_reserva_hotel ON RESERVA(idHotel);",
+            "CREATE INDEX IF NOT EXISTS idx_reserva_dates ON RESERVA(dataInici, dataFinal);",
+            "CREATE INDEX IF NOT EXISTS idx_client_dni ON CLIENT(dni);",
+            "CREATE INDEX IF NOT EXISTS idx_treballador_dni ON TREBALLADOR(dni);",
+            "CREATE INDEX IF NOT EXISTS idx_activitat_hotel ON ACTIVITAT(idHotel);",
+            "CREATE INDEX IF NOT EXISTS idx_reserva_habitacio ON RESERVA_HABITACIO(idReserva);"
+        ]
+
+        for idx in indexos:
+            cur.execute(idx)
+
+        conn.commit()
+        print("✅ Índexs creats correctament.")
+
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error creant índexs: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
 if __name__ == "__main__":
     print("🔄 Generant dades dummy...")
@@ -274,6 +302,8 @@ if __name__ == "__main__":
     generar_treballadors(10000)
     generar_activitats(150000)
     generar_reserves(100000)
+    crear_indexos()
     print("🎉 Totes les dades generades correctament.")
+
 
 

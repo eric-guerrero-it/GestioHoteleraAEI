@@ -6,9 +6,13 @@ consultes de dades i validació mitjançant triggers o funcions en PL/pgSQL.
 """
 
 import tkinter as tk
-from app.dummy_data.generar_dades import generar_hotels, generar_clients, generar_treballadors, generar_activitats, generar_reserves, crear_indexos, generar_habitacions
-from app.dummy_data.eliminar_dades import eliminar_dades_dummy
+from tkinter import messagebox
+import threading
+
+from dummy_data.generar_dades import generar_hotels, generar_clients, generar_treballadors, generar_activitats, generar_reserves, crear_indexos, generar_habitacions
+from dummy_data.eliminar_dades import eliminar_dades_dummy
 from llibreries.bd import connectar_bd
+
 
 
 def obrir_finestra_alta_modificacio_hotels():
@@ -253,6 +257,69 @@ def obrir_finestra_checkout():
             tk.messagebox.showerror("Error", f"Error en fer el check-out:\n{e}")
 
     tk.Button(finestra, text="Confirmar Check-out", command=fer_checkout).pack(pady=15)
+
+# ───────────────────────────────
+# BLOQUEIG PER EVITAR DUES EXECUCIONS EN PARAL·LEL
+# Variables globals per bloquejar accions concurrents
+generant_dades = False
+eliminant_dades = False
+
+def executar_generar_dades_dummy():
+    global generant_dades, eliminant_dades
+    if generant_dades:
+        messagebox.showwarning("Atenció", "Ja s'estan generant dades dummy.")
+        return
+    if eliminant_dades:
+        messagebox.showwarning("Atenció", "No es poden generar dades mentre s'estan eliminant.")
+        return
+
+    def executar():
+        global generant_dades
+        generant_dades = True
+        try:
+            messagebox.showinfo("Generació", "S'estan generant les dades dummy. Pot trigar uns minuts.")
+            generar_hotels(100)
+            generar_clients(50000)
+            generar_treballadors(10000)
+            generar_activitats(150000)
+            generar_habitacions(15)
+            generar_reserves(100000)
+            crear_indexos()
+            messagebox.showinfo("Finalitzat", "Dades dummy generades correctament.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error en generar les dades:\n{e}")
+        finally:
+            generant_dades = False
+
+    threading.Thread(target=executar, daemon=True).start()
+
+def executar_eliminar_dades_dummy():
+    global generant_dades, eliminant_dades
+    if eliminant_dades:
+        messagebox.showwarning("Atenció", "Ja s'estan eliminant dades.")
+        return
+    if generant_dades:
+        messagebox.showwarning("Atenció", "No es poden eliminar dades mentre s'estan generant.")
+        return
+
+    resposta = messagebox.askyesno("Confirmació", "Estàs segur que vols eliminar totes les dades dummy?")
+    if resposta:
+        def executar():
+            global eliminant_dades
+            eliminant_dades = True
+            try:
+                messagebox.showinfo("Eliminació", "S'estan eliminant les dades dummy...")
+                eliminar_dades_dummy()
+                messagebox.showinfo("Eliminació finalitzada", "Dades dummy eliminades correctament.")
+            except Exception as e:
+                messagebox.showerror("Error", f"Error eliminant les dades:\n{e}")
+            finally:
+                eliminant_dades = False
+
+        threading.Thread(target=executar, daemon=True).start()
+    else:
+        messagebox.showinfo("Cancel·lat", "Eliminació cancel·lada.")
+
 
 def obrir_finestra_reserves_per_dia():
     """
@@ -905,19 +972,10 @@ def obrir_finestra_manteniment():
     tk.Button(root, text="Nova Reserva", width=40, command=obrir_finestra_nova_reserva).pack(pady=3)
     tk.Button(root, text="Check-in", width=40, command=obrir_finestra_checkin).pack(pady=3)
     tk.Button(root, text="Check-out", width=40, command=obrir_finestra_checkout).pack(pady=3)
+    tk.Button(root, text="Generar Dummy Data", width=40, command=executar_generar_dades_dummy).pack(pady=3)
+    tk.Button(root, text="Eliminar Dummy Data", width=40, command=executar_eliminar_dades_dummy).pack(pady=3)
 
-        # DUMMY DATA
-    tk.Button(root, text="Generar Dummy Data", width=40, command=lambda: [
-        generar_hotels(100),
-        generar_clients(50000),
-        generar_treballadors(10000),
-        generar_activitats(150000),
-        generar_habitacions(15),
-        generar_reserves(100000),
-        crear_indexos()
-    ]).pack(pady=3)
-
-    tk.Button(root, text="Eliminar Dummy Data", width=40, command=eliminar_dades_dummy).pack(pady=3)
+    
 
     # ───────────────────────────────
     # CONSULTES DADES

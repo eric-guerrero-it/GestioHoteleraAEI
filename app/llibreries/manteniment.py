@@ -6,6 +6,8 @@ consultes de dades i validació mitjançant triggers o funcions en PL/pgSQL.
 """
 
 import tkinter as tk
+from app.dummy_data.generar_dades import generar_hotels, generar_clients, generar_treballadors, generar_activitats, generar_reserves, crear_indexos, generar_habitacions
+from app.dummy_data.eliminar_dades import eliminar_dades_dummy
 from llibreries.bd import connectar_bd
 
 
@@ -903,6 +905,19 @@ def obrir_finestra_manteniment():
     tk.Button(root, text="Nova Reserva", width=40, command=obrir_finestra_nova_reserva).pack(pady=3)
     tk.Button(root, text="Check-in", width=40, command=obrir_finestra_checkin).pack(pady=3)
     tk.Button(root, text="Check-out", width=40, command=obrir_finestra_checkout).pack(pady=3)
+
+        # DUMMY DATA
+    tk.Button(root, text="Generar Dummy Data", width=40, command=lambda: [
+        generar_hotels(100),
+        generar_clients(50000),
+        generar_treballadors(10000),
+        generar_activitats(150000),
+        generar_habitacions(15),
+        generar_reserves(100000),
+        crear_indexos()
+    ]).pack(pady=3)
+
+    tk.Button(root, text="Eliminar Dummy Data", width=40, command=eliminar_dades_dummy).pack(pady=3)
 
     # ───────────────────────────────
     # CONSULTES DADES

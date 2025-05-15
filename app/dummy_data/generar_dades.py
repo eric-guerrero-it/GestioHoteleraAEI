@@ -200,6 +200,8 @@ def generar_activitats(n=150000):
         cur.close()
         conn.close()
 
+from datetime import timedelta
+
 def generar_reserves(n=100000):
     conn = connectar_bd()
     cur = conn.cursor()
@@ -212,16 +214,16 @@ def generar_reserves(n=100000):
         cur.execute("SELECT idHotel FROM HOTEL")
         hotels = [r[0] for r in cur.fetchall()]
 
-        # Obtenir habitacions
+        # Obtenir habitacions i associar-les al seu hotel
         cur.execute("SELECT idHabitacio, idHotel FROM HABITACIO")
         habitacions = cur.fetchall()
+        habitacions_per_hotel = {}
+        for idHab, idHot in habitacions:
+            habitacions_per_hotel.setdefault(idHot, []).append(idHab)
 
         if not clients or not hotels or not habitacions:
             print("❌ Falten clients, hotels o habitacions.")
             return
-
-        batch_reserva = []
-        batch_reserva_habitacio = []
 
         for i in range(1, n + 1):
             dni_client = random.choice(clients)
@@ -231,26 +233,39 @@ def generar_reserves(n=100000):
             durada = random.randint(1, 14)
             data_final = data_inici + timedelta(days=durada)
 
-            batch_reserva.append((dni_client, id_hotel, data_inici, data_final))
+            # Inserir RESERVA i recuperar ID
+            cur.execute("""
+                INSERT INTO RESERVA (dniClient, idHotel, dataInici, dataFinal)
+                VALUES (%s, %s, %s, %s)
+                RETURNING idReserva
+            """, (dni_client, id_hotel, data_inici, data_final))
+            id_reserva = cur.fetchone()[0]
 
-            if i % 500 == 0 or i == n:
-                # Inserim reserves i recuperem els ID generats
-                cur.executemany("""
-                    INSERT INTO RESERVA (dniClient, idHotel, dataInici, dataFinal)
+            # Triar entre 1 i 2 habitacions del mateix hotel
+            habitacions_hotel = habitacions_per_hotel.get(id_hotel, [])
+            seleccionades = random.sample(habitacions_hotel, k=min(len(habitacions_hotel), random.choice([1, 2])))
+
+            for id_hab in seleccionades:
+                preu_alta = round(random.uniform(80.0, 200.0), 2)
+                preu_baixa = round(preu_alta * 0.7, 2)
+                cur.execute("""
+                    INSERT INTO RESERVA_HABITACIO (idReserva, idHabitacio, preuTemporadaAlta, preuTemporadaBaixa)
                     VALUES (%s, %s, %s, %s)
-                """, batch_reserva)
+                """, (id_reserva, id_hab, preu_alta, preu_baixa))
 
+            if i % 1000 == 0:
                 conn.commit()
-                batch_reserva.clear()
                 print(f"{i}/{n} reserves generades...")
 
-        print("✅ Totes les reserves generades correctament.")
+        conn.commit()
+        print("✅ Totes les reserves (i habitacions) generades correctament.")
     except Exception as e:
         conn.rollback()
         print(f"❌ Error generant reserves: {e}")
     finally:
         cur.close()
         conn.close()
+
 
 if __name__ == "__main__":
     print("🔄 Generant dades dummy...")

@@ -6,29 +6,48 @@ Aquest fitxer s'encarrega d'eliminar les dades simulades generades per a proves
 
 És útil per repetir proves múltiples vegades o fer demostracions amb base de dades buida.
 """
-from faker import Faker
-import random
-from datetime import datetime, timedelta
 from llibreries.bd import connectar_bd
 
-# Faker amb idiomes especials
-faker_default = Faker()
-faker_ru = Faker('ru_RU')
-faker_ja = Faker('ja_JP')
-faker_zh = Faker('zh_CN')
-
-def eliminar_dummy_data():
+def eliminar_dades_dummy():
     conn = connectar_bd()
     cur = conn.cursor()
-    # Eliminem tot el relacionat amb clients i hotels amb telèfon que comença per 999
-    cur.execute("DELETE FROM FACTURA_SERVEI")
-    cur.execute("DELETE FROM FACTURA")
-    cur.execute("DELETE FROM SOLLICITUD")
-    cur.execute("DELETE FROM RESERVA_HABITACIO")
-    cur.execute("DELETE FROM RESERVA")
-    cur.execute("DELETE FROM CLIENT WHERE dni IN (SELECT dni FROM PERSONA WHERE telefon LIKE '999%')")
-    cur.execute("DELETE FROM PERSONA WHERE telefon LIKE '999%'")
-    cur.execute("DELETE FROM HOTEL WHERE telefon LIKE '999%'")
-    conn.commit()
-    cur.close()
-    conn.close()
+    try:
+        print("🗑️ Eliminant dades dummy de la base de dades...")
+
+        # Ordre segur per evitar errors per claus foranes
+        taules = [
+            "FACTURA_SERVEI",
+            "FACTURA",
+            "SOLLICITUD",
+            "RESERVA_HABITACIO",
+            "RESERVA",
+            "ACTIVITAT",
+            "TREBALLA",
+            "TREBALLADOR",
+            "CLIENT",
+            "PERSONA",
+            "HABITACIO",
+            "HOTEL"
+        ]
+
+        for taula in taules:
+            cur.execute(f"DELETE FROM {taula};")
+            print(f"✔️ Taula {taula} netejada.")
+
+        conn.commit()
+        print("✅ Totes les dades dummy s'han eliminat correctament.")
+
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error durant l'eliminació: {e}")
+
+    finally:
+        cur.close()
+        conn.close()
+
+if __name__ == "__main__":
+    resposta = input("Estàs segur que vols eliminar totes les dades dummy? (sí/no): ")
+    if resposta.lower() == "sí":
+        eliminar_dades_dummy()
+    else:
+        print("❌ Eliminació cancel·lada.")

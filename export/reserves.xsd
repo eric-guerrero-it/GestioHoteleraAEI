@@ -1,0 +1,29 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="reserves">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="reserva" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="hotel" type="xs:integer"/>
+              <xs:element name="dataInici" type="xs:date"/>
+              <xs:element name="dataFinal" type="xs:date"/>
+              <xs:element name="client">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="dni" type="xs:string"/>
+                    <xs:element name="nom" type="xs:string"/>
+                    <xs:element name="cognoms" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:integer" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

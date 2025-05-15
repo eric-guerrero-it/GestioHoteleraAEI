@@ -1,13 +1,15 @@
 """
 Fitxer: export_xml.py
 
-Aquest fitxer permet exportar dades de reserves i clients en format XML.
-També pot generar l'esquema XSD per validar l'estructura dels fitxers XML generats.
-
-És útil per compartir dades amb altres sistemes o per integració amb eines externes.
+Exporta reserves en format XML i mostra un rànquing d'hotels amb més reserves.
+Inclou una interfície gràfica amb Tkinter.
 """
+
 import sys
 import os
+import tkinter as tk
+from tkinter import messagebox
+from tkinter import ttk
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -40,10 +42,9 @@ def exportar_reserves_xml(nom_grup="AEI"):
         """)
 
         reserves = cursor.fetchall()
-        print(f"Nombre de reserves trobades: {len(reserves)}")  
 
         if not reserves:
-            print("No s'han trobat reserves a la base de dades.")
+            messagebox.showinfo("Exportació", "No s'han trobat reserves a la base de dades.")
             return
 
         arrel = ET.Element("reserves")
@@ -60,23 +61,64 @@ def exportar_reserves_xml(nom_grup="AEI"):
             ET.SubElement(client, "cognoms").text = r[6]
 
         arbre = ET.ElementTree(arrel)
-
         carpeta_export = os.path.join(os.path.dirname(__file__), "..", "..", "export")
         os.makedirs(carpeta_export, exist_ok=True)
 
         nom_fitxer = os.path.join(carpeta_export, f"{nom_grup}_{date.today()}.xml")
         ET.indent(arbre, space="\t", level=0)
-
-        print("Directori on s'escriu l'arxiu:", carpeta_export)
-        print(f"S'escriurà el fitxer XML: {nom_fitxer}")
         arbre.write(nom_fitxer, encoding="utf-8", xml_declaration=True)
-        print(f"Exportació completada: {nom_fitxer}")
+
+        messagebox.showinfo("Exportació completada", f"Fitxer guardat a:\n{nom_fitxer}")
 
     except Exception as e:
-        print("Error:", e)
+        messagebox.showerror("Error", str(e))
     finally:
         conn.close()
 
 
+def mostrar_ranking_hotels():
+    try:
+        conn = connectar_bd()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT h.nom, COUNT(*) AS total_reserves
+            FROM reserva r
+            JOIN hotel h ON r.idHotel = h.idHotel
+            GROUP BY h.nom
+            ORDER BY total_reserves DESC
+        """)
+
+        resultats = cursor.fetchall()
+        finestra_ranking = tk.Toplevel()
+        finestra_ranking.title("Rànquing d'Hotels amb més visites")
+
+        tree = ttk.Treeview(finestra_ranking, columns=("Hotel", "Reserves"), show="headings")
+        tree.heading("Hotel", text="Nom de l'Hotel")
+        tree.heading("Reserves", text="Nombre de Reserves")
+        tree.pack(fill="both", expand=True)
+
+        for fila in resultats:
+            tree.insert("", "end", values=fila)
+
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
+    finally:
+        conn.close()
+
+
+def crear_interficie():
+    finestra = tk.Tk()
+    finestra.title("Gestió de Reserves - Espamus+")
+
+    boto_exportar = tk.Button(finestra, text="Exportar reserves a XML", command=exportar_reserves_xml, width=40)
+    boto_exportar.pack(pady=10)
+
+    boto_ranking = tk.Button(finestra, text="Mostrar rànquing d'hotels amb més visites", command=mostrar_ranking_hotels, width=40)
+    boto_ranking.pack(pady=10)
+
+    finestra.mainloop()
+
+
 if __name__ == "__main__":
-    exportar_reserves_xml()
+    crear_interficie()

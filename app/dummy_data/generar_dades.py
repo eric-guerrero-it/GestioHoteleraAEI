@@ -276,8 +276,6 @@ def crear_indexos():
             "CREATE INDEX IF NOT EXISTS idx_reserva_dni ON RESERVA(dniClient);",
             "CREATE INDEX IF NOT EXISTS idx_reserva_hotel ON RESERVA(idHotel);",
             "CREATE INDEX IF NOT EXISTS idx_reserva_dates ON RESERVA(dataInici, dataFinal);",
-            "CREATE INDEX IF NOT EXISTS idx_client_dni ON CLIENT(dni);",
-            "CREATE INDEX IF NOT EXISTS idx_treballador_dni ON TREBALLADOR(dni);",
             "CREATE INDEX IF NOT EXISTS idx_activitat_hotel ON ACTIVITAT(idHotel);",
             "CREATE INDEX IF NOT EXISTS idx_reserva_habitacio ON RESERVA_HABITACIO(idReserva);"
         ]

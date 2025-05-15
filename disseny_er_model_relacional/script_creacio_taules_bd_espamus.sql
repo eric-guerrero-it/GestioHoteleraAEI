@@ -58,11 +58,28 @@ CREATE TABLE IF NOT EXISTS IDIOMA (
     nom VARCHAR(50) PRIMARY KEY
 );
 
+-- Coneixement d’idiomes per treballador amb nivell
+CREATE TABLE IF NOT EXISTS CONEIXEMENT (
+    dni VARCHAR(15) REFERENCES TREBALLADOR(dni),
+    nomIdioma VARCHAR(50) REFERENCES IDIOMA(nom),
+    parla VARCHAR(20) CHECK (parla IN ('malament','regular','bé','molt bé','perfecte')),
+    enten VARCHAR(20) CHECK (enten IN ('malament','regular','bé','molt bé','perfecte')),
+    escriu VARCHAR(20) CHECK (escriu IN ('malament','regular','bé','molt bé','perfecte')),
+    PRIMARY KEY (dni, nomIdioma)  -- PK composta: un treballador no pot repetir idioma
+);
+
 -- Serveis disponibles als hotels (massatges, bugaderia, etc.)
 CREATE TABLE IF NOT EXISTS SERVEI (
     idServei SERIAL PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
     cost NUMERIC(8,2) NOT NULL CHECK (cost >= 0)
+);
+
+-- Relació N:M entre hotels i serveis oferts
+CREATE TABLE IF NOT EXISTS HOTEL_SERVEI (
+    idHotel INT REFERENCES HOTEL(idHotel) ON DELETE CASCADE,
+    idServei INT REFERENCES SERVEI(idServei),
+    PRIMARY KEY (idHotel, idServei)
 );
 
 -- Cada hotel té múltiples habitacions amb dades tècniques
@@ -76,21 +93,14 @@ CREATE TABLE IF NOT EXISTS HABITACIO (
     idHotel INT REFERENCES HOTEL(idHotel)  -- FK cap a l’hotel propietari
 );
 
--- Coneixement d’idiomes per treballador amb nivell
-CREATE TABLE IF NOT EXISTS CONEIXEMENT (
-    dni VARCHAR(15) REFERENCES TREBALLADOR(dni),
-    nomIdioma VARCHAR(50) REFERENCES IDIOMA(nom),
-    parla VARCHAR(20) CHECK (parla IN ('malament','regular','bé','molt bé','perfecte')),
-    enten VARCHAR(20) CHECK (enten IN ('malament','regular','bé','molt bé','perfecte')),
-    escriu VARCHAR(20) CHECK (escriu IN ('malament','regular','bé','molt bé','perfecte')),
-    PRIMARY KEY (dni, nomIdioma)  -- PK composta: un treballador no pot repetir idioma
-);
-
--- Relació N:M entre hotels i serveis oferts
-CREATE TABLE IF NOT EXISTS HOTEL_SERVEI (
-    idHotel INT REFERENCES HOTEL(idHotel) ON DELETE CASCADE,
-    idServei INT REFERENCES SERVEI(idServei),
-    PRIMARY KEY (idHotel, idServei)
+-- Activitats disponibles als hotels per a clients
+CREATE TABLE IF NOT EXISTS ACTIVITAT (
+    idActivitat SERIAL PRIMARY KEY,
+    idHotel INT REFERENCES HOTEL(idHotel) ON DELETE CASCADE,  -- Activitat associada a un hotel
+    nom VARCHAR(100) NOT NULL,
+    descripcio TEXT,
+    data DATE,
+    preu NUMERIC(6,2) CHECK (preu >= 0)
 );
 
 -- Relació de treballadors assignats a un hotel

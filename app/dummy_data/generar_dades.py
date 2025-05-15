@@ -1,14 +1,36 @@
+"""
+Fitxer: generar_dades.py
+
+Aquest script permet generar dades massives (dummy data) per validar la performance 
+i funcionalitat del sistema de gestió hotelera Espamus+. Utilitza la llibreria Faker 
+per crear dades sintètiques realistes amb noms en diferents idiomes (ciríl·lic, japonès, xinès).
+
+Taules cobertes:
+- HOTEL (100)
+- CLIENT (50.000)
+- TREBALLADOR i relació amb HOTEL (10.000)
+- ACTIVITAT (150.000)
+- RESERVA + RESERVA_HABITACIO (100.000)
+
+Característiques clau:
+- Les dades són coherents i relacionades correctament entre taules.
+- La generació es fa en lots per millorar el rendiment.
+- Es creen índexs útils per a consultes posteriors, evitant els que serien innecessaris.
+- Telefons que comencen amb '999' permeten diferenciar fàcilment les dades dummy.
+
+Recomanat executar amb entorn controlat o entorn de proves. 
+Compatible amb PostgreSQL i connexió via mòdul `connectar_bd()` del paquet llibreries.
+"""
+
 from faker import Faker
 import random
 from datetime import datetime
 import sys
 import os
 
-# afegir la ruta a llibreries per importar connectar_bd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'llibreries')))
 from bd import connectar_bd
 
-# Faker amb idiomes especials
 faker_default = Faker()
 faker_ru = Faker('ru_RU')
 faker_ja = Faker('ja_JP')
@@ -98,7 +120,6 @@ def generar_treballadors(n=10000):
         tipus_treballador = ['cuina', 'recepcio', 'neteja', 'manteniment', 'direccio']
         id_hotels = []
 
-        # Recuperar ID d'hotels existents per assignar-los aleatòriament
         cur.execute("SELECT idHotel FROM HOTEL")
         rows = cur.fetchall()
         id_hotels = [r[0] for r in rows]
@@ -160,7 +181,6 @@ def generar_activitats(n=150000):
     conn = connectar_bd()
     cur = conn.cursor()
     try:
-        # Recuperar ID dels hotels
         cur.execute("SELECT idHotel FROM HOTEL")
         hotels = [r[0] for r in cur.fetchall()]
 
@@ -206,15 +226,12 @@ def generar_reserves(n=100000):
     conn = connectar_bd()
     cur = conn.cursor()
     try:
-        # Obtenir DNI de clients
         cur.execute("SELECT dni FROM CLIENT")
         clients = [r[0] for r in cur.fetchall()]
         
-        # Obtenir ID dels hotels
         cur.execute("SELECT idHotel FROM HOTEL")
         hotels = [r[0] for r in cur.fetchall()]
 
-        # Obtenir habitacions i associar-les al seu hotel
         cur.execute("SELECT idHabitacio, idHotel FROM HABITACIO")
         habitacions = cur.fetchall()
         habitacions_per_hotel = {}
@@ -233,7 +250,6 @@ def generar_reserves(n=100000):
             durada = random.randint(1, 14)
             data_final = data_inici + timedelta(days=durada)
 
-            # Inserir RESERVA i recuperar ID
             cur.execute("""
                 INSERT INTO RESERVA (dniClient, idHotel, dataInici, dataFinal)
                 VALUES (%s, %s, %s, %s)
@@ -241,7 +257,6 @@ def generar_reserves(n=100000):
             """, (dni_client, id_hotel, data_inici, data_final))
             id_reserva = cur.fetchone()[0]
 
-            # Triar entre 1 i 2 habitacions del mateix hotel
             habitacions_hotel = habitacions_per_hotel.get(id_hotel, [])
             seleccionades = random.sample(habitacions_hotel, k=min(len(habitacions_hotel), random.choice([1, 2])))
 
@@ -302,6 +317,3 @@ if __name__ == "__main__":
     generar_reserves(100000)
     crear_indexos()
     print("🎉 Totes les dades generades correctament.")
-
-
-

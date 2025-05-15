@@ -1,11 +1,21 @@
 """
 Fitxer: eliminar_dades.py
 
-Aquest fitxer s'encarrega d'eliminar les dades simulades generades per a proves 
-(de la base de dades o fitxers temporals), deixant l’entorn net per a nous tests.
+Aquest script elimina totes les dades dummy generades per proves dins el projecte 
+de gestió hotelera Espamus+. L'objectiu és deixar la base de dades neta per repetir 
+proves, validar rendiment o fer demostracions amb dades regenerades.
 
-És útil per repetir proves múltiples vegades o fer demostracions amb base de dades buida.
+Característiques:
+- Elimina les dades seguint l'ordre correcte per evitar errors per dependències entre taules.
+- Neteja més de 10 taules relacionades (reserves, clients, treballadors, activitats...).
+- Pensat per funcionar després d'executar el script `generar_dades.py`.
+- Mostra informació visual pas a pas del procés.
+- Inclou confirmació per evitar eliminacions accidentals.
+
+Requereix la connexió definida al mòdul `connectar_bd()` del paquet `llibreries`.
+Recomanat utilitzar només en entorns de desenvolupament o proves.
 """
+
 from llibreries.bd import connectar_bd
 
 def eliminar_dades_dummy():
@@ -14,7 +24,6 @@ def eliminar_dades_dummy():
     try:
         print("🗑️ Eliminant dades dummy de la base de dades...")
 
-        # Ordre segur per evitar errors per claus foranes
         taules = [
             "FACTURA_SERVEI",
             "FACTURA",
@@ -51,3 +60,4 @@ if __name__ == "__main__":
         eliminar_dades_dummy()
     else:
         print("❌ Eliminació cancel·lada.")
+        

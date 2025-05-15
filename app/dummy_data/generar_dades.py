@@ -348,7 +348,8 @@ if __name__ == "__main__":
     generar_clients(50000)
     generar_treballadors(10000)
     generar_activitats(150000)
+    generar_habitacions(15)
     generar_reserves(100000)
     crear_indexos()
-    generar_habitacions(15)
     print("🎉 Totes les dades generades correctament.")
+

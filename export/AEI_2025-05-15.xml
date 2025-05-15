@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<reserves>
+	<reserva id="2">
+		<hotel>2</hotel>
+		<dataInici>2024-03-15</dataInici>
+		<dataFinal>2024-03-20</dataFinal>
+		<client>
+			<dni>12345678B</dni>
+			<nom>Anna</nom>
+			<cognoms>Martínez Solà</cognoms>
+		</client>
+	</reserva>
+</reserves>

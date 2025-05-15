@@ -1,17 +1,20 @@
 """
 Fitxer: eliminar_dades.py
 
-Aquest script elimina totes les dades dummy generades per proves dins el projecte 
-de gestió hotelera Espamus+. L'objectiu és deixar la base de dades neta per repetir 
-proves, validar rendiment o fer demostracions amb dades regenerades.
+Aquest script elimina totes les dades dummy generades per proves dins del sistema 
+de gestió hotelera Espamus+. És útil per reiniciar l'estat de la base de dades i 
+permetre noves execucions de tests o demostracions.
 
-Característiques:
-- Elimina les dades seguint l'ordre correcte per evitar errors de dependència.
-- Inclou filtre específic per només eliminar les dades generades per scripts (telèfons '999%').
-- Pensat per funcionar després de `generar_dades.py`.
-- Mostra informació clara del procés amb confirmació prèvia.
+Característiques clau:
+- Elimina registres de més de 10 taules relacionades (reserves, clients, activitats, etc.).
+- Respecta l’ordre de dependència per evitar errors de clau forana.
+- Filtra només les dades generades per scripts, mitjançant el prefix '999' als telèfons.
+- Requereix confirmació per evitar eliminacions accidentals.
+- Mostra l’estat de l’operació amb missatges clars.
 
-Requereix la connexió definida al mòdul `connectar_bd()` dins `llibreries`.
+Requereix:
+- Connexió a PostgreSQL via la funció `connectar_bd()` (modul llibreries.bd)
+- Ús exclusiu en entorns de desenvolupament o proves.
 """
 
 import sys
@@ -23,9 +26,8 @@ def eliminar_dades_dummy():
     conn = connectar_bd()
     cur = conn.cursor()
     try:
-        print("🗑️ Iniciant eliminació de dades dummy...")
+        print("Iniciant eliminació de dades dummy...")
 
-        # Eliminar registres en ordre de dependència
         cur.execute("DELETE FROM FACTURA_SERVEI")
         cur.execute("DELETE FROM FACTURA")
         cur.execute("DELETE FROM SOLLICITUD")
@@ -56,3 +58,4 @@ if __name__ == "__main__":
         eliminar_dades_dummy()
     else:
         print("Eliminació cancel·lada.")
+        

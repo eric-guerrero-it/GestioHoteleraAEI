@@ -1,3 +1,4 @@
+
 -- MODEL RELACIONAL: Implementat per a la base de dades de la cadena hotelera ESPAMUS+. Grup12 AEI 
 
 -- Informació bàsica dels hotels gestionats
@@ -35,6 +36,10 @@ SERVEI(idServei, nom, cost)
 
 -- Dades físiques de les habitacions d'un hotel concret
 HABITACIO(idHabitació, número, llits, m2, teNevera, teTelevisió, idHotel)
+ON {idHotel} REFERENCIA HOTEL {idHotel}
+
+-- Activitats ofertes pels hotels per als clients
+ACTIVITAT(idActivitat, idHotel, nom, descripció, data, preu)
 ON {idHotel} REFERENCIA HOTEL {idHotel}
 
 -- Relació N:M entre TREBALLADOR i IDIOMA amb atributs
@@ -80,4 +85,3 @@ FACTURA_SERVEI(idFactura, idSollicitud)
 ON {idFactura} REFERENCIA FACTURA {idFactura}
 ON {idSollicitud} REFERENCIA SOLLICITUD {idSollicitud}
 PK: {idFactura, idSollicitud}
-

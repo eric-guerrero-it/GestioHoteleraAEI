@@ -6,45 +6,41 @@ de gestió hotelera Espamus+. L'objectiu és deixar la base de dades neta per re
 proves, validar rendiment o fer demostracions amb dades regenerades.
 
 Característiques:
-- Elimina les dades seguint l'ordre correcte per evitar errors per dependències entre taules.
-- Neteja més de 10 taules relacionades (reserves, clients, treballadors, activitats...).
-- Pensat per funcionar després d'executar el script `generar_dades.py`.
-- Mostra informació visual pas a pas del procés.
-- Inclou confirmació per evitar eliminacions accidentals.
+- Elimina les dades seguint l'ordre correcte per evitar errors de dependència.
+- Inclou filtre específic per només eliminar les dades generades per scripts (telèfons '999%').
+- Pensat per funcionar després de `generar_dades.py`.
+- Mostra informació clara del procés amb confirmació prèvia.
 
-Requereix la connexió definida al mòdul `connectar_bd()` del paquet `llibreries`.
-Recomanat utilitzar només en entorns de desenvolupament o proves.
+Requereix la connexió definida al mòdul `connectar_bd()` dins `llibreries`.
 """
 
-from llibreries.bd import connectar_bd
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'llibreries')))
+from bd import connectar_bd
 
 def eliminar_dades_dummy():
     conn = connectar_bd()
     cur = conn.cursor()
     try:
-        print("Eliminant dades dummy de la base de dades...")
+        print("🗑️ Iniciant eliminació de dades dummy...")
 
-        taules = [
-            "FACTURA_SERVEI",
-            "FACTURA",
-            "SOLLICITUD",
-            "RESERVA_HABITACIO",
-            "RESERVA",
-            "ACTIVITAT",
-            "TREBALLA",
-            "TREBALLADOR",
-            "CLIENT",
-            "PERSONA",
-            "HABITACIO",
-            "HOTEL"
-        ]
-
-        for taula in taules:
-            cur.execute(f"DELETE FROM {taula};")
-            print(f"Taula {taula} netejada.")
+        # Eliminar registres en ordre de dependència
+        cur.execute("DELETE FROM FACTURA_SERVEI")
+        cur.execute("DELETE FROM FACTURA")
+        cur.execute("DELETE FROM SOLLICITUD")
+        cur.execute("DELETE FROM RESERVA_HABITACIO")
+        cur.execute("DELETE FROM RESERVA")
+        cur.execute("DELETE FROM ACTIVITAT")
+        cur.execute("DELETE FROM TREBALLA")
+        cur.execute("DELETE FROM TREBALLADOR WHERE dni IN (SELECT dni FROM PERSONA WHERE telefon LIKE '999%')")
+        cur.execute("DELETE FROM CLIENT WHERE dni IN (SELECT dni FROM PERSONA WHERE telefon LIKE '999%')")
+        cur.execute("DELETE FROM PERSONA WHERE telefon LIKE '999%'")
+        cur.execute("DELETE FROM HABITACIO WHERE idHotel IN (SELECT idHotel FROM HOTEL WHERE telefon LIKE '999%')")
+        cur.execute("DELETE FROM HOTEL WHERE telefon LIKE '999%'")
 
         conn.commit()
-        print("Totes les dades dummy s'han eliminat correctament.")
+        print("Dades dummy eliminades correctament.")
 
     except Exception as e:
         conn.rollback()
@@ -55,9 +51,8 @@ def eliminar_dades_dummy():
         conn.close()
 
 if __name__ == "__main__":
-    resposta = input("Estàs segur que vols eliminar totes les dades dummy? (sí/no): ")
-    if resposta.lower() == "sí":
+    resposta = input("Estàs segur que vols eliminar totes les dades dummy generades? (sí/no): ")
+    if resposta.strip().lower() == "sí":
         eliminar_dades_dummy()
     else:
         print("Eliminació cancel·lada.")
-        

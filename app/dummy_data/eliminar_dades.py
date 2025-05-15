@@ -22,7 +22,7 @@ def eliminar_dades_dummy():
     conn = connectar_bd()
     cur = conn.cursor()
     try:
-        print("🗑️ Eliminant dades dummy de la base de dades...")
+        print("Eliminant dades dummy de la base de dades...")
 
         taules = [
             "FACTURA_SERVEI",
@@ -41,14 +41,14 @@ def eliminar_dades_dummy():
 
         for taula in taules:
             cur.execute(f"DELETE FROM {taula};")
-            print(f"✔️ Taula {taula} netejada.")
+            print(f"Taula {taula} netejada.")
 
         conn.commit()
-        print("✅ Totes les dades dummy s'han eliminat correctament.")
+        print("Totes les dades dummy s'han eliminat correctament.")
 
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error durant l'eliminació: {e}")
+        print(f"Error durant l'eliminació: {e}")
 
     finally:
         cur.close()
@@ -59,5 +59,5 @@ if __name__ == "__main__":
     if resposta.lower() == "sí":
         eliminar_dades_dummy()
     else:
-        print("❌ Eliminació cancel·lada.")
+        print("Eliminació cancel·lada.")
         

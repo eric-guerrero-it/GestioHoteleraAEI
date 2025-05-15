@@ -17,7 +17,7 @@ from datetime import date
 from llibreries.bd import connectar_bd
 
 
-def exportar_reserves_xml(data_inici, data_final, nom_grup="AEI"):
+def exportar_reserves_xml(nom_grup="AEI"):
     try:
         conn = connectar_bd()
         cursor = conn.cursor()
@@ -36,15 +36,14 @@ def exportar_reserves_xml(data_inici, data_final, nom_grup="AEI"):
             JOIN hotel h ON r.idHotel = h.idHotel
             JOIN client c ON r.dniClient = c.dni
             JOIN persona p ON c.dni = p.dni
-            WHERE r.dataInici >= %s AND r.dataFinal <= %s
             ORDER BY r.dataInici
-        """, (data_inici, data_final))
+        """)
 
         reserves = cursor.fetchall()
         print(f"Nombre de reserves trobades: {len(reserves)}")  
 
         if not reserves:
-            print("No s'han trobat reserves dins del rang indicat.")
+            print("No s'han trobat reserves a la base de dades.")
             return
 
         arrel = ET.Element("reserves")
@@ -80,6 +79,4 @@ def exportar_reserves_xml(data_inici, data_final, nom_grup="AEI"):
 
 
 if __name__ == "__main__":
-    data_inici = "2024-01-01"
-    data_final = "2024-12-31"
-    exportar_reserves_xml(data_inici, data_final)
+    exportar_reserves_xml()

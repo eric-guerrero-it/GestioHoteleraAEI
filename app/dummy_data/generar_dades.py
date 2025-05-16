@@ -19,7 +19,7 @@ Característiques clau:
 - Telefons que comencen amb '999' permeten diferenciar fàcilment les dades dummy.
 
 Recomanat executar amb entorn controlat o entorn de proves. 
-Compatible amb PostgreSQL i connexió via mòdul `connectar_bd()` del paquet llibreries.
+Compatible amb PostgreSQL i connexió via mòdul connectar_bd() del paquet llibreries.
 """
 
 from faker import Faker
@@ -72,6 +72,8 @@ def generar_hotels(n=100):
         cur.close()
         conn.close()
 
+NATIONALITIES = ['Spanish', 'Russian', 'Japanese', 'Chinese', 'French', 'Italian', 'German', 'Brazilian']
+
 def generar_clients(n=50000):
     conn = connectar_bd()
     cur = conn.cursor()
@@ -85,14 +87,15 @@ def generar_clients(n=50000):
             telefon = '999' + faker_default.msisdn()[:7]
             adreca = faker_default.address()
             data_naixement = faker_default.date_of_birth(minimum_age=18, maximum_age=90)
+            nacionalitat = random.choice(NATIONALITIES)
 
-            batch_persona.append((dni, nom, cognoms, telefon, adreca, data_naixement))
+            batch_persona.append((dni, nom, cognoms, telefon, adreca, nacionalitat, data_naixement))
             batch_client.append((dni,))
 
-            if i % 500 == 0 or i == n:
+            if i % 2500 == 0 or i == n:
                 cur.executemany("""
-                    INSERT INTO PERSONA (dni, nom, cognoms, telefon, adreca, dataNaixement)
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    INSERT INTO PERSONA (dni, nom, cognoms, telefon, adreca, nacionalitat, dataNaixement)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """, batch_persona)
 
                 cur.executemany("""
@@ -114,15 +117,13 @@ def generar_clients(n=50000):
         conn.close()
 
 def generar_treballadors(n=10000):
+    tipus_treballador = ['cuina', 'recepcio', 'neteja', 'manteniment', 'direccio']
+
     conn = connectar_bd()
     cur = conn.cursor()
     try:
-        tipus_treballador = ['cuina', 'recepcio', 'neteja', 'manteniment', 'direccio']
-        id_hotels = []
-
         cur.execute("SELECT idHotel FROM HOTEL")
-        rows = cur.fetchall()
-        id_hotels = [r[0] for r in rows]
+        id_hotels = [r[0] for r in cur.fetchall()]
 
         if not id_hotels:
             print("No hi ha hotels a la base de dades. Primer executa generar_hotels().")
@@ -139,18 +140,19 @@ def generar_treballadors(n=10000):
             telefon = '999' + faker_default.msisdn()[:7]
             adreca = faker_default.address()
             data_naixement = faker_default.date_of_birth(minimum_age=18, maximum_age=65)
+            nacionalitat = random.choice(NATIONALITIES)
 
             tipus = random.choice(tipus_treballador)
             hotel_id = random.choice(id_hotels)
 
-            batch_persona.append((dni, nom, cognoms, telefon, adreca, data_naixement))
+            batch_persona.append((dni, nom, cognoms, telefon, adreca, nacionalitat, data_naixement))
             batch_treballador.append((dni, tipus))
             batch_treballa.append((dni, hotel_id))
 
-            if i % 500 == 0 or i == n:
+            if i % 1500 == 0 or i == n:
                 cur.executemany("""
-                    INSERT INTO PERSONA (dni, nom, cognoms, telefon, adreca, dataNaixement)
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    INSERT INTO PERSONA (dni, nom, cognoms, telefon, adreca, nacionalitat, dataNaixement)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """, batch_persona)
 
                 cur.executemany("""
@@ -203,7 +205,7 @@ def generar_activitats(n=150000):
 
             batch.append((id_hotel, nom, descripcio, data, preu))
 
-            if i % 1000 == 0 or i == n:
+            if i % 10000 == 0 or i == n:
                 cur.executemany("""
                     INSERT INTO ACTIVITAT (idHotel, nom, descripcio, data, preu)
                     VALUES (%s, %s, %s, %s, %s)
@@ -268,7 +270,7 @@ def generar_reserves(n=100000):
                     VALUES (%s, %s, %s, %s)
                 """, (id_reserva, id_hab, preu_alta, preu_baixa))
 
-            if i % 1000 == 0:
+            if i % 5000 == 0:
                 conn.commit()
                 print(f"{i}/{n} reserves generades...")
 

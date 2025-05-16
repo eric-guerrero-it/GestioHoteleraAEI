@@ -1,7 +1,7 @@
-# 📦 Bloc d’Exportació de Dades – Gestió Hotelera Espamus+
+# Bloc d’Exportació de Dades – Gestió Hotelera Espamus+
 Aquest document recull les funcionalitats desenvolupades per al bloc d’exportació de dades del projecte Espamus+, que inclou: generació de fitxers XML, enviament de dades a l’API dels Mossos d’Esquadra, registre d'enviaments i la creació d’un Dashboard Power BI connectat a la base de dades.
 
-## 1️⃣ Exportació de reserves a XML
+## Exportació de reserves a XML
 L’usuari pot seleccionar dues dates per exportar totes les reserves dins d’aquest interval. Les dades exportades inclouen el client, hotel, dates i habitació, i es guarden en un fitxer XML ben estructurat i validat.
 
 ### ✅ Menu inicial
@@ -19,7 +19,7 @@ L’usuari pot seleccionar dues dates per exportar totes les reserves dins d’a
 
 ---
 
-# 2️⃣ Enviament de dades a l’API dels Mossos d’Esquadra
+# Enviament de dades a l’API dels Mossos d’Esquadra
 S’ha desenvolupat una funcionalitat per exportar i enviar les reserves dels clients (amb DNI, nacionalitat i habitació) entre dues dates en format JSON a una API externa. L'enviament queda registrat a la taula enviaments_api.
 
 ### ✅ Menu inicial
@@ -36,7 +36,7 @@ S’ha desenvolupat una funcionalitat per exportar i enviar les reserves dels cl
 
 
 ---
-# 3️⃣ Dashboard amb Power BI
+# Dashboard amb Power BI
 S’ha creat un quadre de comandament (dashboard) amb Power BI connectat a la base de dades PostgreSQL, on es visualitzen:
 
 ### [Pdf del dashboard](AEI-Power_BI.pdf) 

@@ -68,3 +68,7 @@ INSERT INTO TREBALLA (dnitreballador, idHotel)
 VALUES 
 ('12345678A', 1),  
 ('23456789B', 2);
+
+-- Nova reserva per l'hotel amb idHotel = 1
+INSERT INTO RESERVA (idReserva, dataInici, dataFinal, idHotel, dniclient)
+VALUES (3, '2025-05-15', '2025-05-17', 1, '12345678A');

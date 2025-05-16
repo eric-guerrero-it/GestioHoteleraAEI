@@ -4,15 +4,15 @@ Aquest document recull les funcionalitats desenvolupades per al bloc d’exporta
 ## 1️⃣ Exportació de reserves a XML
 L’usuari pot seleccionar dues dates per exportar totes les reserves dins d’aquest interval. Les dades exportades inclouen el client, hotel, dates i habitació, i es guarden en un fitxer XML ben estructurat i validat.
 
-## ✅ Menu inicial
+### ✅ Menu inicial
 
 ![image](https://github.com/user-attachments/assets/a60b62b5-d2d5-4aac-9b92-c2863247ea6b)
 
-## 💾 Guardar XML entre dues dates
+### 💾 Guardar XML entre dues dates
 
 ![image](https://github.com/user-attachments/assets/7f28fc40-d14e-4c9a-83f2-191ca6b3b808)
 
-## 📊 Rànquing d’hotels amb més reserves
+### 📊 Rànquing d’hotels amb més reserves
 
 ![image](https://github.com/user-attachments/assets/ade20901-582f-4ff1-af1c-319fa5cfe172)
 
@@ -22,15 +22,15 @@ L’usuari pot seleccionar dues dates per exportar totes les reserves dins d’a
 # 2️⃣ Enviament de dades a l’API dels Mossos d’Esquadra
 S’ha desenvolupat una funcionalitat per exportar i enviar les reserves dels clients (amb DNI, nacionalitat i habitació) entre dues dates en format JSON a una API externa. L'enviament queda registrat a la taula enviaments_api.
 
-## ✅ Menu inicial
+### ✅ Menu inicial
 
 ![image](https://github.com/user-attachments/assets/55f8748d-073d-4b0d-a7ee-8503abb46359)
 
-## 📤 Enviar JSON entre dues dates
+### 📤 Enviar JSON entre dues dates
 
 ![image](https://github.com/user-attachments/assets/e992e13d-a86b-47ae-9374-2e0eac64a340)
 
-## 📝 Enregistrar l’enviament a la base de dades
+### 📝 Enregistrar l’enviament a la base de dades
 
 ![image](https://github.com/user-attachments/assets/ab6ef2f6-3051-48f5-8217-7302b9e51c1f)
 
@@ -39,21 +39,21 @@ S’ha desenvolupat una funcionalitat per exportar i enviar les reserves dels cl
 # 3️⃣ Dashboard amb Power BI
 S’ha creat un quadre de comandament (dashboard) amb Power BI connectat a la base de dades PostgreSQL, on es visualitzen:
 
-📅 Reserves per dia i per hotel
+#### 📅 Reserves per dia i per hotel
 
-💰 Ingressos previstos
+##### 💰 Ingressos previstos
 
-🛎️ Serveis més contractats
+#### 🛎️ Serveis més contractats
 
-📈 Estadístiques d’ocupació i estades
+#### 📈 Estadístiques d’ocupació i estades
 
-🔌 Connexió a la base de dades
+### 🔌 Connexió a la base de dades
 
 ![image](https://github.com/user-attachments/assets/701f67ac-c6f9-43ed-a498-e3a4dd125bf8)
 
 ![image](https://github.com/user-attachments/assets/3ce270ae-c6e6-4648-a0be-43356a79af70)
 
-📥 Importar taules necessàries
+### 📥 Importar taules necessàries
 
 ![image](https://github.com/user-attachments/assets/7571e921-3b67-42b0-a18d-99d9b3398f6f)
 

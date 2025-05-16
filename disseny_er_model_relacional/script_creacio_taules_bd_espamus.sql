@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS PERSONA (
     cognoms VARCHAR(100) NOT NULL,
     telefon VARCHAR(20),
     adreca VARCHAR(150),
+    nacionalitat VARCHAR(50),
     dataNaixement DATE CHECK (dataNaixement < CURRENT_DATE)
 );
 

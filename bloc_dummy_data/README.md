@@ -102,3 +102,13 @@ També s’inclou un script per netejar totes les dades de prova generades:
 Activitats (ACTIVITAT)
 
 Hotels i habitacions associades (HOTEL, HABITACIO)
+
+--- 
+
+## 👥 Autors 
+
+**Grup 12 – AEI** ASIX – INS Sa Palomera Curs 2024/2025 
+
+--- 
+
+## 🔗 Repositori principal  [Torna al projecte principal](../README.md)

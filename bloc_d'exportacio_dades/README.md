@@ -39,15 +39,15 @@ S’ha desenvolupat una funcionalitat per exportar i enviar les reserves dels cl
 # 3️⃣ Dashboard amb Power BI
 S’ha creat un quadre de comandament (dashboard) amb Power BI connectat a la base de dades PostgreSQL, on es visualitzen:
 
-#### 📅 Reserves per dia i per hotel
+#### 📅 Producció actual y producció anterior
 
-##### 💰 Ingressos previstos
+##### 💰 Produccio diara per hotel
 
-#### 🛎️ Serveis més contractats
+#### 🛎️ Reserves totals
 
-#### 📈 Estadístiques d’ocupació i estades
+#### 📈 Ingresos previstos a alta i baixa 
 
-### 🔌 Connexió a la base de dades
+### 🔌 ADR
 
 ![image](https://github.com/user-attachments/assets/701f67ac-c6f9-43ed-a498-e3a4dd125bf8)
 

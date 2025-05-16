@@ -23,6 +23,7 @@ L’usuari pot seleccionar dues dates per exportar totes les reserves dins d’a
 S’ha desenvolupat una funcionalitat per exportar i enviar les reserves dels clients (amb DNI, nacionalitat i habitació) entre dues dates en format JSON a una API externa. L'enviament queda registrat a la taula enviaments_api.
 
 ✅ Menu inicial
+
 ![image](https://github.com/user-attachments/assets/55f8748d-073d-4b0d-a7ee-8503abb46359)
 
 📤 Enviar JSON entre dues dates

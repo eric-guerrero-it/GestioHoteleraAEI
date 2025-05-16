@@ -57,6 +57,8 @@ S’ha creat un quadre de comandament (dashboard) amb Power BI connectat a la ba
 
 ![image](https://github.com/user-attachments/assets/7571e921-3b67-42b0-a18d-99d9b3398f6f)
 
+### [Pdf del dashboard](/AEI-Power_BI.ppf) 
+
 ---
 
 ## Autors

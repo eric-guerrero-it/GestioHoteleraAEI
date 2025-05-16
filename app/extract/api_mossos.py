@@ -48,9 +48,9 @@ def exportar_reserves_format_mossos(data_inici, data_final):
         carpeta_export = os.path.join(os.path.dirname(__file__), "..", "..", "export")
         os.makedirs(carpeta_export, exist_ok=True)
 
-        nom_fitxer = f"mossos_{date.today()}.json"
+        nom_fitxer = f"AEI_{date.today()}.json"
         fitxer_json = os.path.join(carpeta_export, nom_fitxer)
-        with open(fitxer_json, "w", encoding="utf-8") as f:
+        with open(fitxer_json, "w", encoding="utf-8-sig") as f:
             json.dump(dades, f, indent=4, ensure_ascii=False)
 
         return fitxer_json, dades, f"Fitxer generat: {nom_fitxer}"

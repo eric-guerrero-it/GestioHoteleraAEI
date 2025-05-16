@@ -29,7 +29,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'llibreries')))
-from bd import connectar_bd
+from llibreries.bd import connectar_bd
 
 faker_default = Faker()
 faker_ru = Faker('ru_RU')

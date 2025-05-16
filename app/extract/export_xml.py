@@ -2,7 +2,7 @@
 Fitxer: export_xml.py
 
 Exporta reserves en format XML i mostra un rànquing d'hotels amb més reserves.
-Inclou una interfície gràfica amb Tkinter.
+Inclou una interfície gràfica amb Tkinter i filtres per dates.
 """
 
 import sys
@@ -19,7 +19,7 @@ from datetime import date
 from llibreries.bd import connectar_bd
 
 
-def exportar_reserves_xml(nom_grup="AEI"):
+def exportar_reserves_xml(data_inici, data_final, nom_grup="AEI"):
     try:
         conn = connectar_bd()
         cursor = conn.cursor()
@@ -38,13 +38,14 @@ def exportar_reserves_xml(nom_grup="AEI"):
             JOIN hotel h ON r.idHotel = h.idHotel
             JOIN client c ON r.dniClient = c.dni
             JOIN persona p ON c.dni = p.dni
+            WHERE r.dataInici >= %s AND r.dataFinal <= %s
             ORDER BY r.dataInici
-        """)
+        """, (data_inici, data_final))
 
         reserves = cursor.fetchall()
 
         if not reserves:
-            messagebox.showinfo("Exportació", "No s'han trobat reserves a la base de dades.")
+            messagebox.showinfo("Exportació", "No s'han trobat reserves dins del rang indicat.")
             return
 
         arrel = ET.Element("reserves")
@@ -111,7 +112,25 @@ def crear_interficie():
     finestra = tk.Tk()
     finestra.title("Gestió de Reserves - Espamus+")
 
-    boto_exportar = tk.Button(finestra, text="Exportar reserves a XML", command=exportar_reserves_xml, width=40)
+    tk.Label(finestra, text="Data inici (YYYY-MM-DD):").pack()
+    entry_inici = tk.Entry(finestra, width=20)
+    entry_inici.pack(pady=2)
+
+    tk.Label(finestra, text="Data final (YYYY-MM-DD):").pack()
+    entry_final = tk.Entry(finestra, width=20)
+    entry_final.pack(pady=2)
+
+    def exportar_amb_dates():
+        data_inici = entry_inici.get().strip()
+        data_final = entry_final.get().strip()
+
+        if not data_inici or not data_final:
+            messagebox.showwarning("Camp buit", "Has d'introduir les dues dates.")
+            return
+
+        exportar_reserves_xml(data_inici, data_final)
+
+    boto_exportar = tk.Button(finestra, text="Exportar reserves entre dates", command=exportar_amb_dates, width=40)
     boto_exportar.pack(pady=10)
 
     boto_ranking = tk.Button(finestra, text="Mostrar rànquing d'hotels amb més visites", command=mostrar_ranking_hotels, width=40)

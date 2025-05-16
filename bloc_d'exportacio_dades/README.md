@@ -41,15 +41,15 @@ S’ha creat un quadre de comandament (dashboard) amb Power BI connectat a la ba
 
 ### [Pdf del dashboard](AEI-Power_BI.pdf) 
 
-#### 📅 Producció actual y producció anterior
+#### Producció actual y producció anterior
 
-##### 💰 Produccio diara per hotel
+##### Produccio diara per hotel
 
-#### 🛎️ Reserves totals
+####  Reserves totals
 
-#### 📈 Ingresos previstos a alta i baixa 
+#### Ingresos previstos a alta i baixa 
 
-### 🔌 ADR
+### ADR
 
 ![image](https://github.com/user-attachments/assets/701f67ac-c6f9-43ed-a498-e3a4dd125bf8)
 

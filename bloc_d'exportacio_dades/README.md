@@ -1,11 +1,19 @@
 Bloc d’exportació de dades
 
+Menu inicial
+
+![image](https://github.com/user-attachments/assets/a60b62b5-d2d5-4aac-9b92-c2863247ea6b)
+
+Guardar el XML (entre les 2 datas colocades)
+
+![image](https://github.com/user-attachments/assets/7f28fc40-d14e-4c9a-83f2-191ca6b3b808)
+
+Ranking de hotles amb mes visites
+
+![image](https://github.com/user-attachments/assets/ade20901-582f-4ff1-af1c-319fa5cfe172)
 
 
-
-
-
-
+--------------------------------
 
 Api mossos d'escuadra
 

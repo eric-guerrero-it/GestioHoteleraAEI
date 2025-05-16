@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS FACTURA_SERVEI (
     PRIMARY KEY (idFactura, idSollicitud)
 );
 
-CREATE TABLE enviaments_api (
+CREATE TABLE IF NOT EXISTS enviaments_api (
     id SERIAL PRIMARY KEY,
     data_hora TIMESTAMP DEFAULT now(),
     estat TEXT,

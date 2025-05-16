@@ -152,3 +152,11 @@ CREATE TABLE IF NOT EXISTS FACTURA_SERVEI (
     idSollicitud INT REFERENCES SOLLICITUD(idSollicitud),
     PRIMARY KEY (idFactura, idSollicitud)
 );
+
+CREATE TABLE enviaments_api (
+    id SERIAL PRIMARY KEY,
+    data_hora TIMESTAMP DEFAULT now(),
+    estat TEXT,
+    json_enviat JSONB
+);
+

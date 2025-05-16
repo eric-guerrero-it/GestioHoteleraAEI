@@ -7,5 +7,14 @@
         "fecha_salida": "2024-07-29",
         "habitación": "11",
         "nacionalidad": "Chile"
+    },
+    {
+        "dni": "74825559A",
+        "nombre": "Jeffrey Shepard",
+        "apellidos": "Dean Johnson",
+        "fecha_llegada": "2023-08-06",
+        "fecha_salida": "2023-08-17",
+        "habitación": "13",
+        "nacionalidad": "Spain"
     }
 ]

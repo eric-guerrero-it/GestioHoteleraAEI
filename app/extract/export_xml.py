@@ -62,7 +62,7 @@ def exportar_reserves_xml(data_inici, data_final, nom_grup="AEI"):
             ET.SubElement(client, "cognoms").text = r[6]
 
         arbre = ET.ElementTree(arrel)
-        carpeta_export = os.path.join(os.path.dirname(__file__), "..", "..", "export")
+        carpeta_export = os.path.join(os.path.dirname(__file__),  "..", "export")
         os.makedirs(carpeta_export, exist_ok=True)
 
         nom_fitxer = os.path.join(carpeta_export, f"{nom_grup}_{date.today()}.xml")

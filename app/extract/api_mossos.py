@@ -45,7 +45,7 @@ def exportar_reserves_format_mossos(data_inici, data_final):
                 "nacionalidad": r[6]
             })
 
-        carpeta_export = os.path.join(os.path.dirname(__file__), "..", "..", "export")
+        carpeta_export = os.path.join(os.path.dirname(__file__), "..", "export")
         os.makedirs(carpeta_export, exist_ok=True)
 
         nom_fitxer = f"AEI_{date.today()}.json"

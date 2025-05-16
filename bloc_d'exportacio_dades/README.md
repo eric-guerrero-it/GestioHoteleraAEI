@@ -39,6 +39,8 @@ S’ha desenvolupat una funcionalitat per exportar i enviar les reserves dels cl
 # 3️⃣ Dashboard amb Power BI
 S’ha creat un quadre de comandament (dashboard) amb Power BI connectat a la base de dades PostgreSQL, on es visualitzen:
 
+### [Pdf del dashboard](AEI-Power_BI.pdf) 
+
 #### 📅 Producció actual y producció anterior
 
 ##### 💰 Produccio diara per hotel
@@ -56,8 +58,6 @@ S’ha creat un quadre de comandament (dashboard) amb Power BI connectat a la ba
 ### 📥 Importar taules necessàries
 
 ![image](https://github.com/user-attachments/assets/7571e921-3b67-42b0-a18d-99d9b3398f6f)
-
-### [Pdf del dashboard](AEI-Power_BI.pdf) 
 
 ---
 

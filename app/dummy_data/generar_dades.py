@@ -343,7 +343,7 @@ def generar_habitacions(per_hotel=10):
         conn.close()
 
 if __name__ == "__main__":
-    print("🔄 Generant dades dummy...")
+    print("Generant dades dummy...")
     generar_hotels(100)
     generar_clients(50000)
     generar_treballadors(10000)

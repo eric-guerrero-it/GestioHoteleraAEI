@@ -1,32 +1,25 @@
 """
 Fitxer: inform.py
 
-Inclou funcions per generar informes del sistema: reserves, facturació, disponibilitat, etc.
-Permet extreure informació útil per a la gestió de l’hotel.
-"""
+Aquest script implementa la interfície gràfica d’Espamus+ amb Tkinter per consultar 
+i mostrar informes de gestió hotelera, utilitzant dades emmagatzemades en PostgreSQL.
 
-"""
-Fitxer: inform.py
+Funcionalitats principals:
+- Connexió segura a la base de dades amb psycopg2.
+- Visualització en format taula (ASCII) mitjançant `tabulate`.
+- 4 informes disponibles:
+  1. Nombre d’habitacions i personal per hotel.
+  2. Personal assignat a un hotel.
+  3. Check-in / check-out en una data concreta.
+  4. Rànquing d’hotels per nombre de reserves.
 
-Inclou funcions per generar informes del sistema: reserves, facturació, disponibilitat, etc.
-Permet extreure informació útil per a la gestió de l’hotel.
-"""
+Llibreries requerides:
+- tkinter → Interfície d’usuari
+- tabulate → pip install tabulate
+- psycopg2 → pip install psycopg2-binary
 
-"""
-Frontend amb Tkinter per mostrar informes en format tabulat (ASCII),
-utilitzant la llibreria `tabulate` per mostrar les dades en taules.
-
-Aquest codi estableix una connexió a la base de dades PostgreSQL utilitzant `psycopg2`
-per recuperar dades per a quatre informes relacionats amb la gestió hotelera:
-1. Donat un hotel, saber quantes habitacions i personal disposa.
-2. Informe de tot el personal que treballa a l’hotel.
-3. Informe d'arribades i sortides (check-in/check-out) d’un hotel a una data seleccionada.
-4. Rànquing d’hotels amb més visites (nombre total de reserves per hotel).
-
-Llibreries necessàries:
-- tkinter (inclòs per defecte amb Python)
-- tabulate (pip install tabulate)
-- psycopg2 (pip install psycopg2-binary)
+Pensat per facilitar el manteniment futur i la col·laboració entre desenvolupadors.
+Inclou tota la configuració de la GUI: camps d’entrada, botons i àrea de resultats.
 """
 
 import tkinter as tk
@@ -135,7 +128,7 @@ def mostrar_informe_simulat():
     except Exception as e:
         messagebox.showerror("Error", f"Error en executar la consulta: {e}")
 
-# GUI principal
+# Tkinter
 root = tk.Tk()
 root.title("Espamus+ | Consultes i Informes")
 root.geometry("750x620")
@@ -171,4 +164,3 @@ result_display = tk.Text(frame_resultats, height=15, width=85, font=("Courier", 
 result_display.pack()
 
 root.mainloop()
-

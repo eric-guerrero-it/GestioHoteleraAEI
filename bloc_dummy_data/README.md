@@ -99,9 +99,9 @@ També s’inclou un script per netejar totes les dades de prova generades:
 
 - Clients i treballadors (CLIENT, TREBALLADOR, PERSONA)
 
-Activitats (ACTIVITAT)
+- Activitats (ACTIVITAT)
 
-Hotels i habitacions associades (HOTEL, HABITACIO)
+- Hotels i habitacions associades (HOTEL, HABITACIO)
 
 --- 
 

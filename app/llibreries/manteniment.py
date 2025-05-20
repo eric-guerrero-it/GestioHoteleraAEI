@@ -13,6 +13,8 @@ from dummy_data.generar_dades import generar_hotels, generar_clients, generar_tr
 from dummy_data.eliminar_dades import eliminar_dades_dummy
 from llibreries.bd import connectar_bd
 
+import subprocess
+import os
 
 
 def obrir_finestra_alta_modificacio_hotels():
@@ -952,6 +954,13 @@ def obrir_finestra_historial_client():
 
     tk.Button(finestra, text="Consultar Historial", command=consultar_historial).pack(pady=20)
 
+def executar_script(rel_path):
+    try:
+        base_dir = os.path.dirname(__file__)  # app/llibreries
+        full_path = os.path.abspath(os.path.join(base_dir, rel_path))  # ../extract/...
+        subprocess.Popen(["python", full_path])
+    except Exception as e:
+        tk.messagebox.showerror("Error", f"No s'ha pogut executar el script:\n{e}")
 
 def obrir_finestra_manteniment():
     """
@@ -975,7 +984,10 @@ def obrir_finestra_manteniment():
         ("Check-in", obrir_finestra_checkin),
         ("Check-out", obrir_finestra_checkout),
         ("Generar Dummy Data", executar_generar_dades_dummy),
-        ("Eliminar Dummy Data", executar_eliminar_dades_dummy)
+        ("Eliminar Dummy Data", executar_eliminar_dades_dummy),
+        ("Executar generar_dades.py", lambda: executar_script("../extract/export_xml.py")),
+        ("Executar api_mossos.py", lambda: executar_script("../extract/api_mossos.py")),
+        ("Executar bloc de consultes", lambda: executar_script("../llibreries/inform.py"))
     ])
 
     bloc("Consultes d'informació", [

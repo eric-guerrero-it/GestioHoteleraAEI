@@ -959,47 +959,42 @@ def obrir_finestra_manteniment():
     """
     root = tk.Tk()
     root.title("Gestió de Manteniment")
-    root.geometry("500x700")
+    root.geometry("480x600")
 
-    tk.Label(root, text="Mòdul de Manteniment", font=("Arial", 16)).pack(pady=10)
+    tk.Label(root, text="Mòdul de Manteniment", font=("Arial", 14, "bold")).pack(pady=5)
 
-    # ───────────────────────────────
-    # GESTIÓ DE DADES
-    tk.Label(root, text="Gestió bàsica", font=("Arial", 12, "bold")).pack(pady=5)
+    def bloc(titol, accions):
+        tk.Label(root, text=titol, font=("Arial", 11, "bold")).pack(pady=(8, 2))
+        for text, func in accions:
+            tk.Button(root, text=text, width=45, font=("Arial", 9), command=func).pack(pady=1)
 
-    tk.Button(root, text="Alta / Modificació d'Hotels", width=40, command=obrir_finestra_alta_modificacio_hotels).pack(pady=3)
-    tk.Button(root, text="Alta de Personal", width=40, command=obrir_finestra_alta_personal).pack(pady=3)
-    tk.Button(root, text="Nova Reserva", width=40, command=obrir_finestra_nova_reserva).pack(pady=3)
-    tk.Button(root, text="Check-in", width=40, command=obrir_finestra_checkin).pack(pady=3)
-    tk.Button(root, text="Check-out", width=40, command=obrir_finestra_checkout).pack(pady=3)
-    tk.Button(root, text="Generar Dummy Data", width=40, command=executar_generar_dades_dummy).pack(pady=3)
-    tk.Button(root, text="Eliminar Dummy Data", width=40, command=executar_eliminar_dades_dummy).pack(pady=3)
+    bloc("Gestió bàsica", [
+        ("Alta / Modificació d'Hotels", obrir_finestra_alta_modificacio_hotels),
+        ("Alta de Personal", obrir_finestra_alta_personal),
+        ("Nova Reserva", obrir_finestra_nova_reserva),
+        ("Check-in", obrir_finestra_checkin),
+        ("Check-out", obrir_finestra_checkout),
+        ("Generar Dummy Data", executar_generar_dades_dummy),
+        ("Eliminar Dummy Data", executar_eliminar_dades_dummy)
+    ])
 
-    
+    bloc("Consultes d'informació", [
+        ("Reserves per dia", obrir_finestra_reserves_per_dia),
+        ("Empleats per hotel", obrir_finestra_empleats_per_hotel),
+        ("Recepció: idiomes i nivell", obrir_finestra_recepcio_idiomes_nivell),
+        ("Cuina: categoria i revisor", obrir_finestra_cuina_categoria_revisor),
+        ("Habitacions per hotel", obrir_finestra_habitacions_per_hotel),
+        ("Reserves per hotel", obrir_finestra_reserves_per_hotel),
+        ("Serveis de l'hotel", obrir_finestra_serveis_per_hotel),
+        ("Sol·licituds de serveis", obrir_finestra_solicituds_per_client),
+        ("Reserves futures per habitació", obrir_finestra_reserves_per_habitacio),
+        ("Historial del client", obrir_finestra_historial_client)
+    ])
 
-    # ───────────────────────────────
-    # CONSULTES DADES
-    tk.Label(root, text="Consultes d'informació", font=("Arial", 12, "bold")).pack(pady=10)
-
-    tk.Button(root, text="Reserves per dia (hora, client, habitació)", width=50, command=obrir_finestra_reserves_per_dia).pack(pady=2)
-    tk.Button(root, text="Empleats per hotel (director, gerent, funció)", width=50, command=obrir_finestra_empleats_per_hotel).pack(pady=2)
-    tk.Button(root, text="Recepció: idiomes i nivell", width=50, command=obrir_finestra_recepcio_idiomes_nivell).pack(pady=2)
-    tk.Button(root, text="Cuina: categoria i revisor", width=50, command=obrir_finestra_cuina_categoria_revisor).pack(pady=2)
-    tk.Button(root, text="Habitacions per hotel i característiques", width=50, command=obrir_finestra_habitacions_per_hotel).pack(pady=2)
-    tk.Button(root, text="Reserves per hotel (dates, clients)", width=50, command=obrir_finestra_reserves_per_hotel).pack(pady=2)
-    tk.Button(root, text="Serveis que ofereix l'hotel", width=50, command=obrir_finestra_serveis_per_hotel).pack(pady=2)
-    tk.Button(root, text="Sol·licituds de serveis per client", width=50, command=obrir_finestra_solicituds_per_client).pack(pady=2)
-    #Opcional
-    tk.Button(root, text="Reserves futures per habitació", width=50, command=obrir_finestra_reserves_per_habitacio).pack(pady=2)
-    tk.Button(root, text="Historial de visites i serveis per client", width=50, command=obrir_finestra_historial_client).pack(pady=2)
-
-
-    # ───────────────────────────────
-    # TRIGGERS I VALIDACIONS (PLPGSQL)
-    tk.Label(root, text="Gestió i validació amb PL/pgSQL", font=("Arial", 12, "bold")).pack(pady=10)
-
-    tk.Button(root, text="Executar procediments de validació", width=40, command=executar_procediment_validacio).pack(pady=2)
-    tk.Button(root, text="Simular trigger de control", width=40, command=simular_trigger_control_reserva).pack(pady=2)
-
+    bloc("PL/pgSQL i Triggers", [
+        ("Executar validació", executar_procediment_validacio),
+        ("Simular trigger de reserva", simular_trigger_control_reserva)
+    ])
 
     root.mainloop()
+

@@ -72,7 +72,7 @@ def generar_hotels(n=100):
         cur.close()
         conn.close()
 
-NATIONALITIES = ['Spain', 'United Kingdom', 'Japan', 'China', 'France', 'Italian', 'German', 'Brazil']
+NATIONALITIES = ['Spain', 'United Kingdom', 'Japan', 'China', 'France', 'Italy', 'Germany', 'Brazil']
 
 def generar_clients(n=50000):
     conn = connectar_bd()

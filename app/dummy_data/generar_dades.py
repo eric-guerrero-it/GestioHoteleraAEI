@@ -29,7 +29,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'llibreries')))
-from llibreries.bd import connectar_bd
+from bd import connectar_bd
 
 faker_default = Faker()
 faker_ru = Faker('ru_RU')
@@ -72,7 +72,7 @@ def generar_hotels(n=100):
         cur.close()
         conn.close()
 
-NATIONALITIES = ['Spanish', 'Russian', 'Japanese', 'Chinese', 'French', 'Italian', 'German', 'Brazilian']
+NATIONALITIES = ['Spain', 'United Kingdom', 'Japan', 'China', 'France', 'Italian', 'German', 'Brazil']
 
 def generar_clients(n=50000):
     conn = connectar_bd()

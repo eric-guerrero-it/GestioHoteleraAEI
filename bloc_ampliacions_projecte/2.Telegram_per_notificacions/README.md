@@ -10,7 +10,7 @@ El sistema llegeix el token del bot de Telegram de forma segura des d’un fitxe
 BOT_TOKEN=123456789:ABCdefGhIJKlmNOPqrsTUVwxYZ
 ```
 
-### Estructura del fitxer telegram.py
+## 🏗️ Estructura del fitxer telegram.py
 Aquest fitxer conté:
 
 Carregador del token des del fitxer extern
@@ -19,12 +19,7 @@ Funció per consultar el chat_id del client
 
 Funció per enviar missatges a través de l'API oficial de Telegram
 
-📸 (Captura recomanada): Pantalla del fitxer telegram.py mostrant la funció enviar_missatge_telegram.
-
-## Vinculació de clients amb el seu chat_id
-Quan el client inicia conversa amb el bot (via t.me/NOM_DEL_BOT?start=DNI0001), el sistema pot capturar el seu chat_id i guardar-lo a la taula client, fent possible l’enviament automàtic de notificacions.
-
-### (Captura recomanada): Missatge de Telegram des del bot amb el primer "Hola!" i consulta getUpdates retornant el chat_id.
+![image](https://github.com/user-attachments/assets/d2a1885c-4220-4a10-ae0d-41138e0c7ae2)
 
 ## 📩 Notificacions en fer una reserva
 Quan un client realitza una reserva mitjançant la interfície, rep automàticament un missatge de confirmació amb el seu ID de reserva i l’hotel on s’ha registrat.

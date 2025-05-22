@@ -40,3 +40,11 @@ Aquest fitxer `logs/registre.log` guarda els esdeveniments importants del sistem
 2025-05-22 16:37:37 - LOGIN - admin
 2025-05-22 17:02:31 - LOGIN - admin
 2025-05-22 17:41:16 - LOGIN - admin
+2025-05-22 18:02:27 - LOGIN - admin
+2025-05-22 18:20:03 - REGISTRE - admin
+2025-05-22 18:22:25 - LOGIN - admin
+2025-05-22 18:26:20 - LOGIN - admin
+2025-05-22 18:34:33 - REGISTRE - usuari1
+2025-05-22 18:34:42 - LOGIN - usuari1
+2025-05-22 18:35:16 - LOGIN - admin
+2025-05-22 18:36:40 - LOGIN - usuari1

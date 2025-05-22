@@ -26,8 +26,9 @@ def crear_taula_usuaris():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS usuaris (
             usuari TEXT PRIMARY KEY,
-            contrasenya TEXT NOT NULL
-        )
+            contrasenya TEXT NOT NULL,
+            permisos TEXT
+            )
     ''')
 
     conn.commit()
@@ -116,6 +117,7 @@ def iniciar_gui():
     Obre una interfície gràfica per registrar o iniciar sessió amb Tkinter.
     """
     login_correcte = False
+    usuari_autenticat = None
 
     def registrar_gui():
         usuari = simpledialog.askstring("Registrar-se", "Usuari:")
@@ -138,7 +140,7 @@ def iniciar_gui():
         Valida les credencials amb la base de dades i mostra un missatge
         d'èxit o error segons el resultat. També registra l'acció si és correcta.
         """
-        nonlocal login_correcte  
+        nonlocal login_correcte, usuari_autenticat  
         usuari = simpledialog.askstring("Login", "Usuari:")
         if usuari is None:
             return
@@ -150,6 +152,7 @@ def iniciar_gui():
             guardar_a_fitxer(usuari, "login")
             messagebox.showinfo("Benvingut", "Sessió iniciada correctament!")
             login_correcte = True 
+            usuari_autenticat = usuari
             root.destroy()        
         else:
             messagebox.showerror("Error", "Usuari o contrasenya incorrectes.")
@@ -166,4 +169,4 @@ def iniciar_gui():
     tk.Button(root, text="Registrar-se", width=20, command=registrar_gui).pack(pady=5)
 
     root.mainloop()
-    return login_correcte
+    return login_correcte, usuari_autenticat

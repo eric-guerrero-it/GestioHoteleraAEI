@@ -11,8 +11,9 @@
 from llibreries import login, manteniment
 
 def main():
-    if login.iniciar_gui():
-        manteniment.obrir_finestra_manteniment()
+    login_correcte, usuari = login.iniciar_gui()
+    if login_correcte:
+        manteniment.obrir_finestra_manteniment(usuari)
 
 if __name__ == "__main__":
     main()

@@ -22,7 +22,6 @@ from telegram import enviar_missatge_telegram
 import subprocess
 import os
 
-
 def obrir_finestra_alta_modificacio_hotels():
     """
     Obre una finestra per donar d'alta o modificar dades d'un hotel.
@@ -988,10 +987,30 @@ def executar_script(rel_path):
     except Exception as e:
         tk.messagebox.showerror("Error", f"No s'ha pogut executar el script:\n{e}")
 
-def obrir_finestra_manteniment():
+def obrir_finestra_manteniment(usuari_actual):
     """
     Obre la finestra principal de manteniment amb les opcions de gestió i consultes.
     """
+        
+    try:
+        conn = connectar_bd()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS usuaris (
+                usuari TEXT PRIMARY KEY,
+                contrasenya TEXT NOT NULL,
+                permisos TEXT
+            );
+        """)
+        cursor.execute("SELECT permisos FROM usuaris WHERE usuari = %s", (usuari_actual,))
+        resultat = cursor.fetchone()
+        permisos = resultat[0] if resultat else None
+        conn.close()
+    except Exception as e:
+        tk.messagebox.showerror("Error", f"No s'ha pogut validar l'usuari:\n{e}")
+        permisos = None
+
+
     root = tk.Tk()
     root.title("Gestió de Manteniment")
     root.geometry("480x600")
@@ -1002,37 +1021,46 @@ def obrir_finestra_manteniment():
         tk.Label(root, text=titol, font=("Arial", 11, "bold")).pack(pady=(8, 2))
         for text, func in accions:
             tk.Button(root, text=text, width=45, font=("Arial", 9), command=func).pack(pady=1)
+    if permisos == 'admin':
+        bloc("Gestió bàsica", [
+            ("Alta / Modificació d'Hotels", obrir_finestra_alta_modificacio_hotels),
+            ("Alta de Personal", obrir_finestra_alta_personal),
+            ("Nova Reserva", obrir_finestra_nova_reserva),
+            ("Check-in", obrir_finestra_checkin),
+            ("Check-out", obrir_finestra_checkout),
+            ("Generar Dummy Data", executar_generar_dades_dummy),
+            ("Eliminar Dummy Data", executar_eliminar_dades_dummy),
+            ("Executar generar_dades.py", lambda: executar_script("../extract/export_xml.py")),
+            ("Executar api_mossos.py", lambda: executar_script("../extract/api_mossos.py")),
+            ("Executar bloc de consultes", lambda: executar_script("../llibreries/inform.py"))
+        ])
 
-    bloc("Gestió bàsica", [
-        ("Alta / Modificació d'Hotels", obrir_finestra_alta_modificacio_hotels),
-        ("Alta de Personal", obrir_finestra_alta_personal),
-        ("Nova Reserva", obrir_finestra_nova_reserva),
-        ("Check-in", obrir_finestra_checkin),
-        ("Check-out", obrir_finestra_checkout),
-        ("Generar Dummy Data", executar_generar_dades_dummy),
-        ("Eliminar Dummy Data", executar_eliminar_dades_dummy),
-        ("Executar generar_dades.py", lambda: executar_script("../extract/export_xml.py")),
-        ("Executar api_mossos.py", lambda: executar_script("../extract/api_mossos.py")),
-        ("Executar bloc de consultes", lambda: executar_script("../llibreries/inform.py"))
-    ])
+    
+        bloc("Consultes d'informació", [
+            ("Reserves per dia", obrir_finestra_reserves_per_dia),
+            ("Empleats per hotel", obrir_finestra_empleats_per_hotel),
+            ("Recepció: idiomes i nivell", obrir_finestra_recepcio_idiomes_nivell),
+            ("Cuina: categoria i revisor", obrir_finestra_cuina_categoria_revisor),
+            ("Habitacions per hotel", obrir_finestra_habitacions_per_hotel),
+            ("Reserves per hotel", obrir_finestra_reserves_per_hotel),
+            ("Serveis de l'hotel", obrir_finestra_serveis_per_hotel),
+            ("Sol·licituds de serveis", obrir_finestra_solicituds_per_client),
+            ("Reserves futures per habitació", obrir_finestra_reserves_per_habitacio),
+            ("Historial del client", obrir_finestra_historial_client)
+        ])
 
-    bloc("Consultes d'informació", [
-        ("Reserves per dia", obrir_finestra_reserves_per_dia),
-        ("Empleats per hotel", obrir_finestra_empleats_per_hotel),
-        ("Recepció: idiomes i nivell", obrir_finestra_recepcio_idiomes_nivell),
-        ("Cuina: categoria i revisor", obrir_finestra_cuina_categoria_revisor),
-        ("Habitacions per hotel", obrir_finestra_habitacions_per_hotel),
-        ("Reserves per hotel", obrir_finestra_reserves_per_hotel),
-        ("Serveis de l'hotel", obrir_finestra_serveis_per_hotel),
-        ("Sol·licituds de serveis", obrir_finestra_solicituds_per_client),
-        ("Reserves futures per habitació", obrir_finestra_reserves_per_habitacio),
-        ("Historial del client", obrir_finestra_historial_client)
-    ])
 
-    bloc("PL/pgSQL i Triggers", [
-        ("Executar validació", executar_procediment_validacio),
-        ("Simular trigger de reserva", simular_trigger_control_reserva)
-    ])
+        bloc("PL/pgSQL i Triggers", [
+            ("Executar validació", executar_procediment_validacio),
+            ("Simular trigger de reserva", simular_trigger_control_reserva)
+        ])
+    
+    else:
+        bloc("Gestió bàsica", [
+            ("Nova Reserva", obrir_finestra_nova_reserva),
+            ("Check-in", obrir_finestra_checkin),
+            ("Check-out", obrir_finestra_checkout),
+        ])
 
     root.mainloop()
     

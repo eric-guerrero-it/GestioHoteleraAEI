@@ -34,7 +34,10 @@ Missatge exemple:
 ```bash
 Hola! La teva reserva a l'hotel 2 s'ha confirmat correctament. El teu ID de reserva és 47183.
 ```
-📸 (Captura recomanada): Missatge rebut a Telegram confirmant la reserva.
+![image](https://github.com/user-attachments/assets/2b5ae2b1-2402-473b-8bce-e5589549c372)
+
+![image](https://github.com/user-attachments/assets/f7de4239-584b-4e8e-8d9f-7fcf25ab8187)
+
 
 ## 🛎️ Notificació de Check-in
 Quan un client fa el check-in a l’hotel, el sistema envia un missatge de benvinguda.
@@ -44,7 +47,10 @@ Missatge exemple:
 ```bash
 Has fet check-in correctament a l'hotel 1. Et desitgem una bona estada!
 ```
-📸 (Captura recomanada): Missatge de check-in rebut a Telegram.
+![image](https://github.com/user-attachments/assets/8ef6a218-25b7-4c91-9b95-f826cecef84d)
+
+![image](https://github.com/user-attachments/assets/6337bc47-c3bc-4a39-a4e7-fc7187dece49)
+
 
 ## 🏁 Notificació de Check-out
 En realitzar el check-out, el client rep un missatge d’agraïment automàticament:
@@ -54,7 +60,10 @@ Missatge exemple:
 ```bash
 Has fet check-out de l'hotel 1. Gràcies per la teva visita!
 ```
-📸 (Captura recomanada): Missatge de comiat per Telegram després del check-out.
+![image](https://github.com/user-attachments/assets/61a82d63-4b4d-4e8a-934c-fcddb3003d6c)
+
+![image](https://github.com/user-attachments/assets/c037800e-2457-4a50-8d42-429fae5b9566)
+
 
 🧠 Validacions intel·ligents
 Per evitar errors amb les restriccions de la base de dades, el sistema valida que:

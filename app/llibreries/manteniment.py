@@ -8,6 +8,11 @@ consultes de dades i validació mitjançant triggers o funcions en PL/pgSQL.
 import tkinter as tk
 from tkinter import messagebox
 import threading
+import subprocess
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from dummy_data.generar_dades import generar_hotels, generar_clients, generar_treballadors, generar_activitats, generar_reserves, crear_indexos, generar_habitacions
 from dummy_data.eliminar_dades import eliminar_dades_dummy
@@ -830,7 +835,7 @@ def executar_procediment_validacio():
             CREATE OR REPLACE FUNCTION validar_telefon()
             RETURNS TRIGGER AS $$
             BEGIN
-                IF NEW.telefon IS NULL OR NEW.telefon !~ '^\d{9,}$' THEN
+                IF NEW.telefon IS NULL OR NEW.telefon !~ E'^\\d{9,}$' THEN
                     RAISE EXCEPTION 'El telèfon ha de contenir només dígits i tenir com a mínim 9 caràcters.';
                 END IF;
                 RETURN NEW;
@@ -1030,4 +1035,7 @@ def obrir_finestra_manteniment():
     ])
 
     root.mainloop()
-
+    
+if __name__ == "__main__":
+    obrir_finestra_manteniment()
+    

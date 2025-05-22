@@ -133,6 +133,16 @@ EXECUTE FUNCTION evitar_duplicacio_reserva();
 ````
 ![image](https://github.com/user-attachments/assets/76b5fb58-ad43-46ba-8558-0038a503cdd7)
 
+## 📂 Estructura de funcions per usuaris NO administradors
+
+```text
+├── obrir_finestra_nova_reserva()
+├── obrir_finestra_checkin()
+├── obrir_finestra_checkout()
+````
+
+![image](https://github.com/user-attachments/assets/1ef90672-50c1-4a28-a865-3b19cfccfc59)
+
 ---
 
 ## Llibreries utilitzades 

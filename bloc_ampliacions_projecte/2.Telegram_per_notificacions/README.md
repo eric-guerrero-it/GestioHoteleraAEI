@@ -63,7 +63,7 @@ Has fet check-out de l'hotel 1. Gràcies per la teva visita!
 🧠 Validacions intel·ligents
 Per evitar errors amb les restriccions de la base de dades, el sistema valida que:
 
-No es pugui fer el check-out el mateix dia que el check-in (si la restricció CHECK ho prohibeix)
+No es pugui fer el check-out el mateix dia que el check-in 
 
 El chat_id sigui vàlid i existent abans d’enviar qualsevol missatge
 

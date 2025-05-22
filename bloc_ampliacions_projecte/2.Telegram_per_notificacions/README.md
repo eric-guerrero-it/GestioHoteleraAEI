@@ -1,7 +1,7 @@
 # Bloc de Notificacions via Telegram – Gestió Hotelera Espamus+
 Aquest document recull les funcionalitats desenvolupades per integrar notificacions automàtiques mitjançant Telegram Bot API dins del projecte Espamus+. L’objectiu és millorar la qualitat del servei a l’usuari mitjançant avisos en temps real quan realitza accions com fer una reserva, fer check-in o check-out.
 
-##🔐 Configuració segura del Bot
+## 🔐 Configuració segura del Bot
 El sistema llegeix el token del bot de Telegram de forma segura des d’un fitxer extern telegram.enu, per evitar exposar-lo en el codi font. Això segueix el mateix model de gestió de credencials que hotel.enu.
 
 ### Exemple de telegram.enu:

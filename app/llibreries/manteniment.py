@@ -12,6 +12,7 @@ import threading
 from dummy_data.generar_dades import generar_hotels, generar_clients, generar_treballadors, generar_activitats, generar_reserves, crear_indexos, generar_habitacions
 from dummy_data.eliminar_dades import eliminar_dades_dummy
 from llibreries.bd import connectar_bd
+from telegram import enviar_missatge_telegram
 
 import subprocess
 import os
@@ -175,10 +176,14 @@ def obrir_finestra_nova_reserva():
             cursor.execute("""
                 INSERT INTO reserva (dataInici, dataFinal, idHotel, dniClient)
                 VALUES (%s, %s, %s, %s)
+                RETURNING idReserva;
             """, (data_inici, data_final, idhotel, dni))
-
+        
+            idreserva = cursor.fetchone()[0]
+        
             conn.commit()
             tk.messagebox.showinfo("Èxit", "Reserva creada correctament.")
+            enviar_missatge_telegram(dni, f"Hola! La teva reserva s'ha confirmat correctament a l'hotel {idhotel}. El teu ID de reserva és {idreserva}.")
             finestra.destroy()
         except Exception as e:
             conn.rollback()
@@ -208,19 +213,28 @@ def obrir_finestra_checkin():
         try:
             conn = connectar_bd()
             cursor = conn.cursor()
-            cursor.execute("SELECT 1 FROM reserva WHERE idreserva = %s", (idreserva,))
-            if cursor.fetchone() is None:
+
+            # Comprova que existeix
+            cursor.execute("SELECT dniClient, idHotel FROM reserva WHERE idreserva = %s", (idreserva,))
+            dades = cursor.fetchone()
+            if not dades:
                 tk.messagebox.showerror("Error", "No existeix cap reserva amb aquest ID.")
                 conn.close()
                 return
+
+            dni, idhotel = dades
 
             cursor.execute("UPDATE reserva SET dataInici = CURRENT_DATE WHERE idreserva = %s", (idreserva,))
             conn.commit()
             conn.close()
             tk.messagebox.showinfo("Èxit", "Check-in fet correctament.")
+
+            enviar_missatge_telegram(dni, f"Has fet check-in correctament a l'hotel {idhotel}. Et desitgem una bona estada!")
+
             finestra.destroy()
         except Exception as e:
             tk.messagebox.showerror("Error", f"Error en fer el check-in:\n{e}")
+
 
     tk.Button(finestra, text="Confirmar Check-in", command=fer_checkin).pack(pady=15)
 
@@ -244,16 +258,23 @@ def obrir_finestra_checkout():
         try:
             conn = connectar_bd()
             cursor = conn.cursor()
-            cursor.execute("SELECT 1 FROM reserva WHERE idreserva = %s", (idreserva,))
-            if cursor.fetchone() is None:
+
+            cursor.execute("SELECT dniClient, idHotel FROM reserva WHERE idreserva = %s", (idreserva,))
+            dades = cursor.fetchone()
+            if not dades:
                 tk.messagebox.showerror("Error", "No existeix cap reserva amb aquest ID.")
                 conn.close()
                 return
+
+            dni, idhotel = dades
 
             cursor.execute("UPDATE reserva SET dataFinal = CURRENT_DATE WHERE idreserva = %s", (idreserva,))
             conn.commit()
             conn.close()
             tk.messagebox.showinfo("Èxit", "Check-out fet correctament.")
+
+            enviar_missatge_telegram(dni, f"Has fet check-out de l'hotel {idhotel}. Gràcies per la teva visita!")
+
             finestra.destroy()
         except Exception as e:
             tk.messagebox.showerror("Error", f"Error en fer el check-out:\n{e}")

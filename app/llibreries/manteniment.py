@@ -22,6 +22,7 @@ from telegram import enviar_missatge_telegram
 import subprocess
 import os
 
+
 def obrir_finestra_alta_modificacio_hotels():
     """
     Obre una finestra per donar d'alta o modificar dades d'un hotel.

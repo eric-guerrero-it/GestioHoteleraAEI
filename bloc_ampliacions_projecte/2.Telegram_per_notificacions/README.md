@@ -21,12 +21,12 @@ Funció per enviar missatges a través de l'API oficial de Telegram
 
 📸 (Captura recomanada): Pantalla del fitxer telegram.py mostrant la funció enviar_missatge_telegram.
 
-### Vinculació de clients amb el seu chat_id
+## Vinculació de clients amb el seu chat_id
 Quan el client inicia conversa amb el bot (via t.me/NOM_DEL_BOT?start=DNI0001), el sistema pot capturar el seu chat_id i guardar-lo a la taula client, fent possible l’enviament automàtic de notificacions.
 
 ### (Captura recomanada): Missatge de Telegram des del bot amb el primer "Hola!" i consulta getUpdates retornant el chat_id.
 
-### Notificacions en fer una reserva
+## 📩 Notificacions en fer una reserva
 Quan un client realitza una reserva mitjançant la interfície, rep automàticament un missatge de confirmació amb el seu ID de reserva i l’hotel on s’ha registrat.
 
 Missatge exemple:
@@ -36,7 +36,7 @@ Hola! La teva reserva a l'hotel 2 s'ha confirmat correctament. El teu ID de rese
 ```
 📸 (Captura recomanada): Missatge rebut a Telegram confirmant la reserva.
 
-### Notificació de Check-in
+## 🛎️ Notificació de Check-in
 Quan un client fa el check-in a l’hotel, el sistema envia un missatge de benvinguda.
 
 Missatge exemple:
@@ -46,7 +46,7 @@ Has fet check-in correctament a l'hotel 1. Et desitgem una bona estada!
 ```
 📸 (Captura recomanada): Missatge de check-in rebut a Telegram.
 
-### Notificació de Check-out
+## 🏁 Notificació de Check-out
 En realitzar el check-out, el client rep un missatge d’agraïment automàticament:
 
 Missatge exemple:

@@ -2,6 +2,8 @@
 __pycache__/
 app/llibreries/__pycache__/
 hotel.enu
+telegram.enu
 registre.log
 app/logs/registre.log
 *.log
+*.enu

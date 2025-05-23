@@ -150,13 +150,13 @@ def obrir_finestra_alta_personal():
 
 def obrir_finestra_nova_reserva():
     """
-    Obre una finestra per donar d'alta una nova reserva.
+    Obre una finestra per donar d'alta una nova reserva, amb llistat d’habitacions amb especificacions.
     """
     finestra = tk.Toplevel()
     finestra.title("Nova Reserva")
-    finestra.geometry("400x400")
+    finestra.geometry("450x550")
 
-    # Camps
+    # Camps bàsics
     labels = {
         "Data Inici (YYYY-MM-DD)": tk.Entry(finestra),
         "Data Final (YYYY-MM-DD)": tk.Entry(finestra),
@@ -168,11 +168,73 @@ def obrir_finestra_nova_reserva():
         tk.Label(finestra, text=text).pack()
         entrada.pack()
 
+    # Variable per a la llista d’habitacions
+    habitacio_var = tk.StringVar(value="(Selecciona una habitació)")
+    habitacio_menu = tk.OptionMenu(finestra, habitacio_var, "")
+    habitacio_menu.pack(pady=10)
+
+    # Diccionari per traduir descripció → idHabitacio
+    habitacions_dict = {}
+
+    def carregar_habitacions():
+        idhotel = labels["ID Hotel"].get().strip()
+        data_inici = labels["Data Inici (YYYY-MM-DD)"].get().strip()
+        data_final = labels["Data Final (YYYY-MM-DD)"].get().strip()
+
+        if not (idhotel and data_inici and data_final):
+            tk.messagebox.showerror("Error", "Has d'introduir ID d'hotel i dates abans.")
+            return
+
+        try:
+            conn = connectar_bd()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT h.idHabitacio, h.numero, h.llits, h.m2
+                FROM habitacio h
+                WHERE h.idHotel = %s
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM reserva r
+                    JOIN reserva_habitacio rh ON r.idReserva = rh.idReserva
+                    WHERE rh.idHabitacio = h.idHabitacio
+                        AND (%s, %s) OVERLAPS (r.dataInici, r.dataFinal)
+                )
+                ORDER BY h.numero;
+            """, (idhotel, data_inici, data_final))
+            habitacions = cursor.fetchall()
+            conn.close()
+
+            if not habitacions:
+                tk.messagebox.showinfo("Info", "No hi ha habitacions lliures per aquestes dates.")
+                return
+
+            habitacions_dict.clear()
+            habitacio_menu['menu'].delete(0, 'end')
+
+            for idhab, numero, llits, m2 in habitacions:
+                desc = f"Habitació {numero} - {llits} llit(s), {m2} m²"
+                habitacions_dict[desc] = idhab
+                habitacio_menu['menu'].add_command(label=desc, command=tk._setit(habitacio_var, desc))
+
+            habitacio_var.set(list(habitacions_dict.keys())[0])
+
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"No s'han pogut carregar les habitacions:\n{e}")
+
+
+    tk.Button(finestra, text="Carregar Habitacions", command=carregar_habitacions).pack()
+
     def guardar_reserva():
         data_inici = labels["Data Inici (YYYY-MM-DD)"].get().strip()
         data_final = labels["Data Final (YYYY-MM-DD)"].get().strip()
         idhotel = labels["ID Hotel"].get().strip()
         dni = labels["DNI Client"].get().strip()
+        desc = habitacio_var.get().strip()
+        idhabitacio = habitacions_dict.get(desc)
+
+        if not idhabitacio:
+            tk.messagebox.showerror("Error", "Has de seleccionar una habitació vàlida.")
+            return
 
         try:
             conn = connectar_bd()
@@ -183,12 +245,30 @@ def obrir_finestra_nova_reserva():
                 VALUES (%s, %s, %s, %s)
                 RETURNING idReserva;
             """, (data_inici, data_final, idhotel, dni))
-        
+
             idreserva = cursor.fetchone()[0]
-        
+
+            cursor.execute("""
+                INSERT INTO reserva_habitacio (idReserva, idHabitacio, preuTemporadaAlta, preuTemporadaBaixa)
+                VALUES (%s, %s, %s, %s)
+            """, (idreserva, idhabitacio, 150.00, 100.00))
+
+            cursor.execute("""
+                SELECT h.nom, ha.numero
+                FROM hotel h
+                JOIN habitacio ha ON h.idHotel = ha.idHotel
+                WHERE ha.idHabitacio = %s
+            """, (idhabitacio,))
+            nom_hotel, numero_habitacio = cursor.fetchone()
+
             conn.commit()
-            tk.messagebox.showinfo("Èxit", "Reserva creada correctament.")
-            enviar_missatge_telegram(dni, f"Hola! La teva reserva s'ha confirmat correctament a l'hotel {idhotel}. El teu ID de reserva és {idreserva}.")
+            tk.messagebox.showinfo("Èxit", f"Reserva {idreserva} creada correctament.")
+            enviar_missatge_telegram(dni,
+                f"Hola! La teva reserva a l'hotel **{nom_hotel}** ha estat confirmada.\n"
+                f"Habitació número: {numero_habitacio}\n"
+                f"ID de reserva: {idreserva}.\n"
+                "Gràcies per confiar en Espamus+!"
+            )            
             finestra.destroy()
         except Exception as e:
             conn.rollback()
@@ -219,7 +299,6 @@ def obrir_finestra_checkin():
             conn = connectar_bd()
             cursor = conn.cursor()
 
-            # Comprova que existeix
             cursor.execute("SELECT dniClient, idHotel FROM reserva WHERE idreserva = %s", (idreserva,))
             dades = cursor.fetchone()
             if not dades:
@@ -229,6 +308,7 @@ def obrir_finestra_checkin():
 
             dni, idhotel = dades
 
+            
             cursor.execute("UPDATE reserva SET dataInici = CURRENT_DATE WHERE idreserva = %s", (idreserva,))
             conn.commit()
             conn.close()

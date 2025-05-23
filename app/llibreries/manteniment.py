@@ -954,15 +954,16 @@ def obrir_finestra_historial_client():
         try:
             conn = connectar_bd()
             cursor = conn.cursor()
-
+            
             cursor.execute("""
                 SELECT r.dataInici, r.dataFinal, s.nom AS servei
                 FROM reserva r
-                LEFT JOIN sollicitud ss ON r.idReserva = ss.idReserva
+                LEFT JOIN sollicitud ss ON r.dniClient = ss.dniClient
                 LEFT JOIN servei s ON ss.idServei = s.idServei
                 WHERE r.dniClient = %s
                 ORDER BY r.dataInici;
             """, (dni,))
+
 
             resultats = cursor.fetchall()
             if not resultats:

@@ -32,7 +32,7 @@ Habitació número: 0
 ID de reserva: 00000.
 Gràcies per confiar en Espamus+!
 ```
-![image](https://github.com/user-attachments/assets/2b5ae2b1-2402-473b-8bce-e5589549c372)
+![image](https://github.com/user-attachments/assets/0e8de072-d028-46e6-aa6a-c8a8905a9da6)
 
 ![image](https://github.com/user-attachments/assets/46603807-b2f6-43d5-a7a1-289c9249b0d5)
 

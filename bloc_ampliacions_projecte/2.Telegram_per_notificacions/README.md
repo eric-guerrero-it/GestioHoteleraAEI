@@ -31,7 +31,7 @@ Hola! La teva reserva a l'hotel 2 s'ha confirmat correctament. El teu ID de rese
 ```
 ![image](https://github.com/user-attachments/assets/2b5ae2b1-2402-473b-8bce-e5589549c372)
 
-![image](https://github.com/user-attachments/assets/f7de4239-584b-4e8e-8d9f-7fcf25ab8187)
+![image](https://github.com/user-attachments/assets/46603807-b2f6-43d5-a7a1-289c9249b0d5)
 
 
 ## 🛎️ Notificació de Check-in
@@ -44,7 +44,7 @@ Has fet check-in correctament a l'hotel 1. Et desitgem una bona estada!
 ```
 ![image](https://github.com/user-attachments/assets/8ef6a218-25b7-4c91-9b95-f826cecef84d)
 
-![image](https://github.com/user-attachments/assets/6337bc47-c3bc-4a39-a4e7-fc7187dece49)
+![image](https://github.com/user-attachments/assets/424e56ae-c290-4c1c-b579-29a43a787faa)
 
 
 ## 🏁 Notificació de Check-out
@@ -57,7 +57,7 @@ Has fet check-out de l'hotel 1. Gràcies per la teva visita!
 ```
 ![image](https://github.com/user-attachments/assets/61a82d63-4b4d-4e8a-934c-fcddb3003d6c)
 
-![image](https://github.com/user-attachments/assets/c037800e-2457-4a50-8d42-429fae5b9566)
+![image](https://github.com/user-attachments/assets/8c4aa259-c7ab-44e4-83b4-8670a120b43b)
 
 
 🧠 Validacions intel·ligents

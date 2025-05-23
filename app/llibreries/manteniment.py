@@ -954,7 +954,7 @@ def obrir_finestra_historial_client():
         try:
             conn = connectar_bd()
             cursor = conn.cursor()
-            
+
             cursor.execute("""
                 SELECT r.dataInici, r.dataFinal, s.nom AS servei
                 FROM reserva r
@@ -1063,6 +1063,12 @@ def obrir_finestra_manteniment(usuari_actual):
             ("Check-in", obrir_finestra_checkin),
             ("Check-out", obrir_finestra_checkout),
         ])
+
+        
+        bloc("Consultes d'informació", [
+            ("Historial del client", obrir_finestra_historial_client)
+        ])
+
 
     root.mainloop()
     

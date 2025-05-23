@@ -9,8 +9,6 @@ Cada línia de l’historial inclou:
 
 Data d’inici i fi de la reserva
 
-Hotel on s’ha allotjat
-
 Serveis utilitzats durant l’estada
 
 Exemple de resultat:

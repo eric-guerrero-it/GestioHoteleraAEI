@@ -27,7 +27,10 @@ Quan un client realitza una reserva mitjançant la interfície, rep automàticam
 Missatge exemple:
 
 ```bash
-Hola! La teva reserva a l'hotel 2 s'ha confirmat correctament. El teu ID de reserva és 47183.
+Hola! La teva reserva a l'hotel "Nom d'Hotel" ha estat confirmada.
+Habitació número: 0
+ID de reserva: 00000.
+Gràcies per confiar en Espamus+!
 ```
 ![image](https://github.com/user-attachments/assets/2b5ae2b1-2402-473b-8bce-e5589549c372)
 

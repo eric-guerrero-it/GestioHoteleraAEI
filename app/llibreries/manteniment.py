@@ -6,6 +6,7 @@ consultes de dades i validació mitjançant triggers o funcions en PL/pgSQL.
 """
 
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
 import threading
 import subprocess
@@ -21,6 +22,8 @@ from telegram import enviar_missatge_telegram
 
 import subprocess
 import os
+
+import datetime
 
 
 def obrir_finestra_alta_modificacio_hotels():
@@ -366,6 +369,103 @@ def obrir_finestra_checkout():
 
     tk.Button(finestra, text="Confirmar Check-out", command=fer_checkout).pack(pady=15)
 
+def obrir_finestra_nova_sollicitud_servei():
+    """
+    Obre una finestra per registrar una nova sol·licitud de servei per un client.
+    """
+    finestra = tk.Toplevel()
+    finestra.title("Nova Sol·licitud de Servei")
+    finestra.geometry("500x500")
+
+    # Camps d’entrada
+    tk.Label(finestra, text="ID de l'Hotel:").pack(pady=5)
+    entrada_hotel = tk.Entry(finestra)
+    entrada_hotel.pack()
+
+    tk.Label(finestra, text="DNI del Client:").pack(pady=5)
+    entrada_dni = tk.Entry(finestra)
+    entrada_dni.pack()
+
+    tk.Label(finestra, text="Servei:").pack(pady=5)
+    combo_servei = ttk.Combobox(finestra, state="readonly")
+    combo_servei.pack()
+
+    tk.Label(finestra, text="Data (YYYY-MM-DD):").pack(pady=5)
+    entrada_data = tk.Entry(finestra)
+    entrada_data.pack()
+
+    tk.Label(finestra, text="Hora (HH:MM):").pack(pady=5)
+    entrada_hora = tk.Entry(finestra)
+    entrada_hora.pack()
+
+    check_var = tk.BooleanVar(value=True)
+    tk.Checkbutton(finestra, text="Pagar en Check-out", variable=check_var).pack(pady=10)
+
+    def carregar_serveis():
+        id_hotel = entrada_hotel.get().strip()
+        if not id_hotel:
+            messagebox.showerror("Error", "Has d’introduir un ID d’hotel abans de seleccionar el servei.")
+            return
+
+        try:
+            conn = connectar_bd()
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT s.idServei, s.nom
+                FROM servei s
+                JOIN hotel_servei hs ON s.idServei = hs.idServei
+                WHERE hs.idHotel = %s
+                ORDER BY s.nom;
+            """, (id_hotel,))
+            serveis = cursor.fetchall()
+            conn.close()
+
+            if serveis:
+                combo_servei["values"] = [f"{s[0]} - {s[1]}" for s in serveis]
+                combo_servei.current(0)
+            else:
+                combo_servei["values"] = []
+                messagebox.showinfo("Sense serveis", "Aquest hotel no ofereix cap servei.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No s’ha pogut carregar els serveis:\n{e}")
+
+    combo_servei.bind("<Button-1>", lambda e: carregar_serveis())
+
+    def crear_sollicitud():
+        id_hotel = entrada_hotel.get().strip()
+        dni = entrada_dni.get().strip()
+        data = entrada_data.get().strip()
+        hora = entrada_hora.get().strip()
+        pagar = check_var.get()
+
+        try:
+            if not all([id_hotel, dni, data, hora, combo_servei.get()]):
+                messagebox.showerror("Error", "Tots els camps són obligatoris.")
+                return
+
+            id_servei = combo_servei.get().split(" - ")[0]
+            timestamp = f"{data} {hora}:00"
+
+            datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+
+            conn = connectar_bd()
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO sollicitud (dataHora, idHotel, idServei, dniClient, pagarEnCheckOut)
+                VALUES (%s, %s, %s, %s, %s);
+            """, (timestamp, id_hotel, id_servei, dni, pagar))
+
+            conn.commit()
+            conn.close()
+            messagebox.showinfo("Èxit", "Sol·licitud creada correctament.")
+            finestra.destroy()
+
+        except ValueError:
+            messagebox.showerror("Error", "Format de data o hora incorrecte.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No s’ha pogut crear la sol·licitud:\n{e}")
+
+    tk.Button(finestra, text="Crear Sol·licitud", command=crear_sollicitud).pack(pady=20)
 # ───────────────────────────────
 # BLOQUEIG PER EVITAR DUES EXECUCIONS EN PARAL·LEL
 # Variables globals per bloquejar accions concurrents
@@ -428,23 +528,35 @@ def executar_eliminar_dades_dummy():
     else:
         messagebox.showinfo("Cancel·lat", "Eliminació cancel·lada.")
 
-
 def obrir_finestra_reserves_per_dia():
     """
     Obre una finestra per consultar les reserves per dia, amb l'hora, client i habitació.
     """
     finestra = tk.Toplevel()
     finestra.title("Reserves per Dia")
-    finestra.geometry("500x400")
+    finestra.geometry("600x600")
 
     tk.Label(finestra, text="Data (YYYY-MM-DD):").pack(pady=10)
     entrada_data = tk.Entry(finestra)
-    entrada_data.pack(pady=10)
+    entrada_data.pack(pady=5)
+
+    # Frame pels resultats
+    frame_resultats = tk.Frame(finestra)
+    frame_resultats.pack(pady=10, fill="both", expand=True)
+
+    # Scrollbar vertical
+    scrollbar = tk.Scrollbar(frame_resultats)
+    scrollbar.pack(side="right", fill="y")
+
+    # Caixa de text amb scrollbar
+    caixa_text = tk.Text(frame_resultats, wrap="none", yscrollcommand=scrollbar.set)
+    caixa_text.pack(fill="both", expand=True)
+    scrollbar.config(command=caixa_text.yview)
 
     def consultar_reserves():
         dia = entrada_data.get().strip()
         if not dia:
-            tk.messagebox.showerror("Error", "Has d'introduir una data.")
+            messagebox.showerror("Error", "Has d'introduir una data.")
             return
         try:
             conn = connectar_bd()
@@ -471,18 +583,21 @@ def obrir_finestra_reserves_per_dia():
             """, (dia,))
 
             reserves = cursor.fetchall()
+            caixa_text.delete("1.0", tk.END)  # Netejar resultats anteriors
+
             if not reserves:
-                tk.messagebox.showinfo("Resultat", "No hi ha reserves per aquest dia.")
+                caixa_text.insert(tk.END, "No hi ha reserves per aquest dia.")
             else:
-                resultats = "\n".join([f"Reserva ID: {r[0]} | Data Inici: {r[1]} | Data Final: {r[2]} | Client: {r[3]} - {r[4]} | Habitació: {r[5]}" for r in reserves])
-                tk.messagebox.showinfo("Reserves per Dia", resultats)
+                for r in reserves:
+                    text = f"Reserva ID: {r[0]} | Inici: {r[1]} | Final: {r[2]} | Client: {r[3]} - {r[4]} | Habitació: {r[5]}\n"
+                    caixa_text.insert(tk.END, text)
 
             conn.close()
 
         except Exception as e:
-            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+            messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
 
-    tk.Button(finestra, text="Consultar Reserves", command=consultar_reserves).pack(pady=20)
+    tk.Button(finestra, text="Consultar Reserves", command=consultar_reserves).pack(pady=10)
 
 def obrir_finestra_empleats_per_hotel():
     """
@@ -490,16 +605,27 @@ def obrir_finestra_empleats_per_hotel():
     """
     finestra = tk.Toplevel()
     finestra.title("Empleats per Hotel")
-    finestra.geometry("500x400")
+    finestra.geometry("600x600")
 
     tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
     entrada_idhotel = tk.Entry(finestra)
-    entrada_idhotel.pack(pady=10)
+    entrada_idhotel.pack(pady=5)
+
+    # Frame pels resultats amb scrollbar
+    frame_resultats = tk.Frame(finestra)
+    frame_resultats.pack(pady=10, fill="both", expand=True)
+
+    scrollbar = tk.Scrollbar(frame_resultats)
+    scrollbar.pack(side="right", fill="y")
+
+    caixa_text = tk.Text(frame_resultats, wrap="none", yscrollcommand=scrollbar.set)
+    caixa_text.pack(fill="both", expand=True)
+    scrollbar.config(command=caixa_text.yview)
 
     def consultar_empleats():
         idhotel = entrada_idhotel.get().strip()
         if not idhotel:
-            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
             return
         try:
             conn = connectar_bd()
@@ -524,21 +650,21 @@ def obrir_finestra_empleats_per_hotel():
             """, (idhotel,))
 
             empleats = cursor.fetchall()
+            caixa_text.delete("1.0", tk.END)  # Netejar resultats anteriors
+
             if not empleats:
-                tk.messagebox.showinfo("Resultat", "No hi ha empleats registrats per aquest hotel.")
+                caixa_text.insert(tk.END, "No hi ha empleats registrats per aquest hotel.")
             else:
-                resultats = "\n".join([f"DNI: {e[0]} | Nom: {e[1]} | Funció: {e[2]} | Experiència Recepció: {e[3] if e[3] else 'N/A'}" for e in empleats])
-                tk.messagebox.showinfo("Empleats per Hotel", resultats)
+                for e in empleats:
+                    text = f"DNI: {e[0]} | Nom: {e[1]} | Funció: {e[2]} | Experiència Recepció: {e[3] if e[3] is not None else 'N/A'}\n"
+                    caixa_text.insert(tk.END, text)
 
             conn.close()
 
         except Exception as e:
-            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+            messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
 
-    tk.Button(finestra, text="Consultar Empleats", command=consultar_empleats).pack(pady=20)
-
-import tkinter as tk
-from llibreries.bd import connectar_bd
+    tk.Button(finestra, text="Consultar Empleats", command=consultar_empleats).pack(pady=10)
 
 def obrir_finestra_recepcio_idiomes_nivell():
     """
@@ -546,7 +672,7 @@ def obrir_finestra_recepcio_idiomes_nivell():
     """
     finestra = tk.Toplevel()
     finestra.title("Recepció: Idiomes i Nivell")
-    finestra.geometry("500x400")
+    finestra.geometry("500x600")
 
     tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
     entrada_idhotel = tk.Entry(finestra)
@@ -602,16 +728,27 @@ def obrir_finestra_recepcio_idiomes_nivell():
     """
     finestra = tk.Toplevel()
     finestra.title("Recepció: Idiomes i Nivell")
-    finestra.geometry("500x400")
+    finestra.geometry("700x500")
 
     tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
     entrada_idhotel = tk.Entry(finestra)
-    entrada_idhotel.pack(pady=10)
+    entrada_idhotel.pack(pady=5)
+
+    # Frame amb scrollbar i text
+    frame_resultats = tk.Frame(finestra)
+    frame_resultats.pack(pady=10, fill="both", expand=True)
+
+    scrollbar = tk.Scrollbar(frame_resultats)
+    scrollbar.pack(side="right", fill="y")
+
+    caixa_text = tk.Text(frame_resultats, wrap="none", yscrollcommand=scrollbar.set)
+    caixa_text.pack(fill="both", expand=True)
+    scrollbar.config(command=caixa_text.yview)
 
     def consultar_recepcio_idiomes_nivell():
         idhotel = entrada_idhotel.get().strip()
         if not idhotel:
-            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
             return
         try:
             conn = connectar_bd()
@@ -639,18 +776,25 @@ def obrir_finestra_recepcio_idiomes_nivell():
             """, (idhotel,))
 
             recepcio_idiomes = cursor.fetchall()
+            caixa_text.delete("1.0", tk.END)  # Netejar resultats anteriors
+
             if not recepcio_idiomes:
-                tk.messagebox.showinfo("Resultat", "No hi ha treballadors de recepció registrats per aquest hotel.")
+                caixa_text.insert(tk.END, "No hi ha treballadors de recepció registrats per aquest hotel.")
             else:
-                resultats = "\n".join([f"DNI: {e[0]} | Nom: {e[1]} | Idioma: {e[2]} | Nivell de parla: {e[3]} | Nivell d'entendre: {e[4]} | Nivell d'escriure: {e[5]}" for e in recepcio_idiomes])
-                tk.messagebox.showinfo("Recepció: Idiomes i Nivell", resultats)
+                for e in recepcio_idiomes:
+                    text = (
+                        f"DNI: {e[0]} | Nom: {e[1]} | Idioma: {e[2]} | "
+                        f"Parla: {e[3]} | Entén: {e[4]} | Escriu: {e[5]}\n"
+                    )
+                    caixa_text.insert(tk.END, text)
 
             conn.close()
 
         except Exception as e:
-            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+            messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
 
-    tk.Button(finestra, text="Consultar Idiomes i Nivell", command=consultar_recepcio_idiomes_nivell).pack(pady=20)
+    tk.Button(finestra, text="Consultar Idiomes i Nivell", command=consultar_recepcio_idiomes_nivell).pack(pady=10)
+
 
 def obrir_finestra_cuina_categoria_revisor():
     """
@@ -658,16 +802,27 @@ def obrir_finestra_cuina_categoria_revisor():
     """
     finestra = tk.Toplevel()
     finestra.title("Cuina: Categoria i Revisor")
-    finestra.geometry("500x400")
+    finestra.geometry("600x500")
 
     tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
     entrada_idhotel = tk.Entry(finestra)
-    entrada_idhotel.pack(pady=10)
+    entrada_idhotel.pack(pady=5)
+
+    # Frame amb scrollbar i Text
+    frame_resultats = tk.Frame(finestra)
+    frame_resultats.pack(pady=10, fill="both", expand=True)
+
+    scrollbar = tk.Scrollbar(frame_resultats)
+    scrollbar.pack(side="right", fill="y")
+
+    caixa_text = tk.Text(frame_resultats, wrap="none", yscrollcommand=scrollbar.set)
+    caixa_text.pack(fill="both", expand=True)
+    scrollbar.config(command=caixa_text.yview)
 
     def consultar_cuina():
         idhotel = entrada_idhotel.get().strip()
         if not idhotel:
-            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
             return
         try:
             conn = connectar_bd()
@@ -691,18 +846,22 @@ def obrir_finestra_cuina_categoria_revisor():
             """, (idhotel,))
 
             cuiners = cursor.fetchall()
+            caixa_text.delete("1.0", tk.END)  # Netejar contingut anterior
+
             if not cuiners:
-                tk.messagebox.showinfo("Resultat", "No hi ha treballadors de cuina registrats per aquest hotel.")
+                caixa_text.insert(tk.END, "No hi ha treballadors de cuina registrats per aquest hotel.")
             else:
-                resultats = "\n".join([f"DNI: {e[0]} | Nom: {e[1]} | Categoria: {e[2]} | Revisor: {e[3]}" for e in cuiners])
-                tk.messagebox.showinfo("Cuina: Categoria i Revisor", resultats)
+                for e in cuiners:
+                    text = f"DNI: {e[0]} | Nom: {e[1]} | Categoria: {e[2]} | Revisor: {e[3] if e[3] else 'N/A'}\n"
+                    caixa_text.insert(tk.END, text)
 
             conn.close()
 
         except Exception as e:
-            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+            messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
 
-    tk.Button(finestra, text="Consultar Cuina", command=consultar_cuina).pack(pady=20)
+    tk.Button(finestra, text="Consultar Cuina", command=consultar_cuina).pack(pady=10)
+
 
 def obrir_finestra_habitacions_per_hotel():
     """
@@ -711,16 +870,27 @@ def obrir_finestra_habitacions_per_hotel():
     """
     finestra = tk.Toplevel()
     finestra.title("Habitacions per Hotel i Característiques")
-    finestra.geometry("500x400")
+    finestra.geometry("600x500")
 
     tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
     entrada_idhotel = tk.Entry(finestra)
-    entrada_idhotel.pack(pady=10)
+    entrada_idhotel.pack(pady=5)
+
+    # Frame per a la caixa de text amb scrollbar
+    frame_resultats = tk.Frame(finestra)
+    frame_resultats.pack(pady=10, fill="both", expand=True)
+
+    scrollbar = tk.Scrollbar(frame_resultats)
+    scrollbar.pack(side="right", fill="y")
+
+    caixa_text = tk.Text(frame_resultats, wrap="none", yscrollcommand=scrollbar.set)
+    caixa_text.pack(fill="both", expand=True)
+    scrollbar.config(command=caixa_text.yview)
 
     def consultar_habitacions():
         idhotel = entrada_idhotel.get().strip()
         if not idhotel:
-            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
             return
         try:
             conn = connectar_bd()
@@ -742,18 +912,24 @@ def obrir_finestra_habitacions_per_hotel():
             """, (idhotel,))
 
             habitacions = cursor.fetchall()
+            caixa_text.delete("1.0", tk.END)
+
             if not habitacions:
-                tk.messagebox.showinfo("Resultat", "No hi ha habitacions registrades per aquest hotel.")
+                caixa_text.insert(tk.END, "No hi ha habitacions registrades per aquest hotel.")
             else:
-                resultats = "\n".join([f"Habitació {e[0]} | Llits: {e[1]} | M2: {e[2]} | Nevera: {e[3]} | Televisió: {e[4]}" for e in habitacions])
-                tk.messagebox.showinfo("Habitacions per Hotel", resultats)
+                for e in habitacions:
+                    text = (
+                        f"Habitació {e[0]} | Llits: {e[1]} | M2: {e[2]} | "
+                        f"Nevera: {'Sí' if e[3] else 'No'} | Televisió: {'Sí' if e[4] else 'No'}\n"
+                    )
+                    caixa_text.insert(tk.END, text)
 
             conn.close()
 
         except Exception as e:
-            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+            messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
 
-    tk.Button(finestra, text="Consultar Habitacions", command=consultar_habitacions).pack(pady=20)
+    tk.Button(finestra, text="Consultar Habitacions", command=consultar_habitacions).pack(pady=10)
 
 def obrir_finestra_reserves_per_hotel():
     """
@@ -762,16 +938,26 @@ def obrir_finestra_reserves_per_hotel():
     """
     finestra = tk.Toplevel()
     finestra.title("Reserves per Hotel (Dates, Clients)")
-    finestra.geometry("500x400")
+    finestra.geometry("650x500")
 
     tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
     entrada_idhotel = tk.Entry(finestra)
-    entrada_idhotel.pack(pady=10)
+    entrada_idhotel.pack(pady=5)
+
+    frame_resultats = tk.Frame(finestra)
+    frame_resultats.pack(pady=10, fill="both", expand=True)
+
+    scrollbar = tk.Scrollbar(frame_resultats)
+    scrollbar.pack(side="right", fill="y")
+
+    caixa_text = tk.Text(frame_resultats, wrap="none", yscrollcommand=scrollbar.set)
+    caixa_text.pack(fill="both", expand=True)
+    scrollbar.config(command=caixa_text.yview)
 
     def consultar_reserves():
         idhotel = entrada_idhotel.get().strip()
         if not idhotel:
-            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
             return
         try:
             conn = connectar_bd()
@@ -795,18 +981,21 @@ def obrir_finestra_reserves_per_hotel():
             """, (idhotel,))
 
             reserves = cursor.fetchall()
+            caixa_text.delete("1.0", tk.END)
+
             if not reserves:
-                tk.messagebox.showinfo("Resultat", "No hi ha reserves registrades per aquest hotel.")
+                caixa_text.insert(tk.END, "No hi ha reserves registrades per aquest hotel.")
             else:
-                resultats = "\n".join([f"Reserva ID: {r[0]} | Data Inici: {r[1]} | Data Final: {r[2]} | Client: {r[3]} - {r[4]}" for r in reserves])
-                tk.messagebox.showinfo("Reserves per Hotel", resultats)
+                for r in reserves:
+                    text = f"Reserva ID: {r[0]} | Inici: {r[1]} | Final: {r[2]} | Client: {r[3]} - {r[4]}\n"
+                    caixa_text.insert(tk.END, text)
 
             conn.close()
 
         except Exception as e:
-            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+            messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
 
-    tk.Button(finestra, text="Consultar Reserves", command=consultar_reserves).pack(pady=20)
+    tk.Button(finestra, text="Consultar Reserves", command=consultar_reserves).pack(pady=10)
 
 def obrir_finestra_serveis_per_hotel():
     """
@@ -814,16 +1003,26 @@ def obrir_finestra_serveis_per_hotel():
     """
     finestra = tk.Toplevel()
     finestra.title("Serveis que ofereix l'Hotel")
-    finestra.geometry("500x400")
+    finestra.geometry("600x600")
 
     tk.Label(finestra, text="ID de l'Hotel:").pack(pady=10)
     entrada_idhotel = tk.Entry(finestra)
-    entrada_idhotel.pack(pady=10)
+    entrada_idhotel.pack(pady=5)
+
+    frame_resultats = tk.Frame(finestra)
+    frame_resultats.pack(pady=10, fill="both", expand=True)
+
+    scrollbar = tk.Scrollbar(frame_resultats)
+    scrollbar.pack(side="right", fill="y")
+
+    caixa_text = tk.Text(frame_resultats, wrap="none", yscrollcommand=scrollbar.set)
+    caixa_text.pack(fill="both", expand=True)
+    scrollbar.config(command=caixa_text.yview)
 
     def consultar_serveis():
         idhotel = entrada_idhotel.get().strip()
         if not idhotel:
-            tk.messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
+            messagebox.showerror("Error", "Has d'introduir un ID d'hotel.")
             return
         try:
             conn = connectar_bd()
@@ -843,18 +1042,22 @@ def obrir_finestra_serveis_per_hotel():
             """, (idhotel,))
 
             serveis = cursor.fetchall()
+            caixa_text.delete("1.0", tk.END)
+
             if not serveis:
-                tk.messagebox.showinfo("Resultat", "No hi ha serveis disponibles per aquest hotel.")
+                caixa_text.insert(tk.END, "No hi ha serveis disponibles per aquest hotel.")
             else:
-                resultats = "\n".join([f"Servei: {s[0]} | Cost: {s[1]}" for s in serveis])
-                tk.messagebox.showinfo("Serveis per Hotel", resultats)
+                for s in serveis:
+                    text = f"Servei: {s[0]} | Cost: {s[1]} €\n"
+                    caixa_text.insert(tk.END, text)
 
             conn.close()
 
         except Exception as e:
-            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+            messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
 
-    tk.Button(finestra, text="Consultar Serveis", command=consultar_serveis).pack(pady=20)
+    tk.Button(finestra, text="Consultar Serveis", command=consultar_serveis).pack(pady=10)
+
 
 def obrir_finestra_solicituds_per_client():
     """
@@ -862,16 +1065,26 @@ def obrir_finestra_solicituds_per_client():
     """
     finestra = tk.Toplevel()
     finestra.title("Sol·licituds de Serveis per Client")
-    finestra.geometry("500x400")
+    finestra.geometry("600x600")
 
     tk.Label(finestra, text="DNI del Client:").pack(pady=10)
     entrada_dni = tk.Entry(finestra)
-    entrada_dni.pack(pady=10)
+    entrada_dni.pack(pady=5)
+
+    frame_resultats = tk.Frame(finestra)
+    frame_resultats.pack(pady=10, fill="both", expand=True)
+
+    scrollbar = tk.Scrollbar(frame_resultats)
+    scrollbar.pack(side="right", fill="y")
+
+    caixa_text = tk.Text(frame_resultats, wrap="none", yscrollcommand=scrollbar.set)
+    caixa_text.pack(fill="both", expand=True)
+    scrollbar.config(command=caixa_text.yview)
 
     def consultar_solicituds():
         dni_client = entrada_dni.get().strip()
         if not dni_client:
-            tk.messagebox.showerror("Error", "Has d'introduir un DNI de client.")
+            messagebox.showerror("Error", "Has d'introduir un DNI de client.")
             return
         try:
             conn = connectar_bd()
@@ -892,24 +1105,27 @@ def obrir_finestra_solicituds_per_client():
             """, (dni_client,))
 
             sol_serveis = cursor.fetchall()
+            caixa_text.delete("1.0", tk.END)
+
             if not sol_serveis:
-                tk.messagebox.showinfo("Resultat", "No hi ha sol·licituds de serveis per aquest client.")
+                caixa_text.insert(tk.END, "No hi ha sol·licituds de serveis per aquest client.")
             else:
-                resultats = "\n".join([f"Servei: {s[0]} | Data: {s[1]} | Pagar a Check-out: {'Sí' if s[2] else 'No'}" for s in sol_serveis])
-                tk.messagebox.showinfo("Sol·licituds de Serveis per Client", resultats)
+                for s in sol_serveis:
+                    text = f"Servei: {s[0]} | Data: {s[1]} | Pagar a Check-out: {'Sí' if s[2] else 'No'}\n"
+                    caixa_text.insert(tk.END, text)
 
             conn.close()
 
         except Exception as e:
-            tk.messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
+            messagebox.showerror("Error", f"No s'ha pogut recuperar la informació:\n{e}")
 
-    tk.Button(finestra, text="Consultar Sol·licituds", command=consultar_solicituds).pack(pady=20)
+    tk.Button(finestra, text="Consultar Sol·licituds", command=consultar_solicituds).pack(pady=10)
 
 def executar_procediment_validacio():
     try:
         conn = connectar_bd()
         cursor = conn.cursor()
-        cursor.execute("SET client_min_messages = WARNING;")  # Per no veure info interna
+        cursor.execute("SET client_min_messages = WARNING;")  
         cursor.execute("DROP TRIGGER IF EXISTS trg_validar_telefon ON persona CASCADE;")
         cursor.execute("""
             CREATE OR REPLACE FUNCTION validar_telefon()
@@ -976,7 +1192,7 @@ def obrir_finestra_reserves_per_habitacio():
     """
     finestra = tk.Toplevel()
     finestra.title("Reserves futures per Habitació")
-    finestra.geometry("500x400")
+    finestra.geometry("500x500")
 
     tk.Label(finestra, text="ID de l'Habitació:").pack(pady=10)
     entrada_idhabitacio = tk.Entry(finestra)
@@ -1020,7 +1236,7 @@ def obrir_finestra_historial_client():
     """
     finestra = tk.Toplevel()
     finestra.title("Historial del Client")
-    finestra.geometry("500x400")
+    finestra.geometry("500x500")
 
     tk.Label(finestra, text="DNI del Client:").pack(pady=10)
     entrada_dni = tk.Entry(finestra)
@@ -1108,6 +1324,7 @@ def obrir_finestra_manteniment(usuari_actual):
             ("Alta / Modificació d'Hotels", obrir_finestra_alta_modificacio_hotels),
             ("Alta de Personal", obrir_finestra_alta_personal),
             ("Nova Reserva", obrir_finestra_nova_reserva),
+            ("Nova Sol·licitud de Servei", obrir_finestra_nova_sollicitud_servei),
             ("Check-in", obrir_finestra_checkin),
             ("Check-out", obrir_finestra_checkout),
             ("Generar Dummy Data", executar_generar_dades_dummy),
@@ -1138,8 +1355,10 @@ def obrir_finestra_manteniment(usuari_actual):
         ])
     
     else:
+
         bloc("Gestió bàsica", [
             ("Nova Reserva", obrir_finestra_nova_reserva),
+            ("Nova Sol·licitud de Servei", obrir_finestra_nova_sollicitud_servei),
             ("Check-in", obrir_finestra_checkin),
             ("Check-out", obrir_finestra_checkout),
         ])

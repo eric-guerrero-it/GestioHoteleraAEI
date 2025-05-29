@@ -1,6 +1,5 @@
 psycopg2-binary
-psycopg2
 faker
 requests
-datetime
 tabulate
+tkinter

@@ -53,7 +53,7 @@ CREATE OR REPLACE FUNCTION validar_telefon()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.telefon IS NULL OR NEW.telefon !~ '^\d{9,}$' THEN
-        RAISE EXCEPTION 'Telèfon invàlid';
+        RAISE EXCEPTION 'El telèfon ha de contenir només dígits i tenir com a mínim 9 caràcters.';
     END IF;
     RETURN NEW;
 END;

@@ -170,5 +170,9 @@ S’han verificat:
 
 ## Autors i Crèdits
 
-Aquest projecte ha estat desenvolupat per l’equip del grup **`Grup12_AEI`** dins del cicle formatiu de grau superior d’**Administració de Sistemes Informàtics i Xarxes (ASIX)**  
+Aquest projecte ha estat desenvolupat per l’equip del grup **Grup12_AEI** dins del cicle formatiu de grau superior d’**Administració de Sistemes Informàtics i Xarxes (ASIX)**  
 **INS Sa Palomera** – Curs 2024/2025
+
+### Participació personal
+
+He participat en el desenvolupament i implementació del projecte dins d’un entorn de treball en equip, col·laborant en la configuració del sistema, la gestió de la base de dades i la validació de les funcionalitats de l’aplicació.
